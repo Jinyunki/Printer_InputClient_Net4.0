@@ -10,21 +10,19 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="22*"/>
-            <RowDefinition Height="403*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-
             <TextBlock Text="{Binding WorkSheetName}" Background="Black" Foreground="White" FontSize="25" Margin="3"/>
-
         </Grid>
 
-        <Grid Grid.Row="1" Grid.RowSpan="2">
+        <Grid Grid.Row="1">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.5*"/>
-                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="8*"/>
                     </Grid.ColumnDefinitions>
 
@@ -45,7 +43,7 @@
                     </ItemsControl>
 
 
-                    <ItemsControl ItemsSource="{Binding PositionData}" Grid.Column="1" Background="Black" Margin="3">
+                    <ItemsControl ItemsSource="{Binding PositionData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Background="Black" Margin="3">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <!-- 가로 방향으로 배치하기 위해 StackPanel 사용 -->
@@ -54,14 +52,15 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding Path=.}" VerticalAlignment="Center" Height="30"
+                                <TextBox Text="{Binding Path=., Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Height="30"
                                          Width="100" TextAlignment="Center" Background="Black" Opacity="0.8"
                                          FontSize="15" Foreground="White" Margin="3"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <TextBlock Grid.Column="2" Text="{Binding InputPrinterCommand}" Background="White"/>
+                    <Button Content="TEST" Grid.Column="2" Command="{Binding SaveCommand}"/>
+                    <TextBlock Grid.Column="3" Text="{Binding InputPrinterCommand}" Background="White"/>
                 </Grid>
             </ScrollViewer>
         </Grid>

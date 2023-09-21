@@ -16,6 +16,18 @@ namespace Printer_InputClient_Net4._0.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+
+        public TPCLCommand tpclCommand = new TPCLCommand();
+        public ReadExcelData readExcelData = new ReadExcelData();
+        private ObservableCollection<ObservableCollection<string>> testItem = new ObservableCollection<ObservableCollection<string>>();
+        public ObservableCollection<ObservableCollection<string>> TestItems
+        {
+            get { return testItem; }
+            set { testItem = value;
+                RaisePropertyChanged(nameof(TestItems));
+            }
+        }
+
         public string filePath = System.IO.Path.Combine(@"D:\0.DefaultFile\JinYunki\Printer_InputClient_Net4.0\Printer_InputClient_Net4.0\bin\Data", "PrintPointRecipie.xlsx");
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
@@ -24,23 +36,30 @@ namespace Printer_InputClient_Net4._0.ViewModel
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             WinBtnEvent();
-            TPCLCommand tpclCommand = new TPCLCommand();
             //BtnSend = new Command(BtnSendCommand);
-            ReadExcelData readExcelData = new ReadExcelData();
-            readExcelData.ReadExcelDataList(filePath,1);
-            List<List<string>> testItem = readExcelData.ReadExcelDataList(filePath, 1);
+            ExcelDataRecive();
+            PrinterSendTest("TestItemFirstResult");
+            SaveCommand = new Command(BtnSaveCommand);
+
+        }
+        public void ExcelDataRecive()
+        {
+            readExcelData.ReadExcelDataList(filePath, 1);
+            testItem = readExcelData.excelTotalData;
             for (int i = 0; i < testItem.Count; i++)
             {
                 PositionCategorise.Add(testItem[i][0]);
                 PositionData.Add(testItem[i][1]);
             }
             WorkSheetName = readExcelData.wrokSheetName;
-            InputPrinterCommand = tpclCommand._MiddleLabelCommand(Double.Parse(PositionData[0]), Double.Parse(PositionData[1]), 
-                Double.Parse(PositionData[2]), Double.Parse(PositionData[3]), Double.Parse(PositionData[4]), Double.Parse(PositionData[5]),"TestItemFirstResult");
 
         }
-        
 
+        public void PrinterSendTest(string testText)
+        {
+            InputPrinterCommand = tpclCommand._MiddleLabelCommand(Double.Parse(PositionData[0]), Double.Parse(PositionData[1]),
+                                  Double.Parse(PositionData[2]), Double.Parse(PositionData[3]), Double.Parse(PositionData[4]), Double.Parse(PositionData[5]), testText);
+        }
 
         private string _inputPrinterCommand;
         public string InputPrinterCommand
@@ -62,7 +81,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
             }
         }
 
-        public ObservableCollection<string> ConvertObservableCollection(List<string> valueList)
+        public ObservableCollection<string> ConvertObservableCollection(ObservableCollection<string> valueList)
         {
             ObservableCollection<string> observableCollection = new ObservableCollection<string>(valueList);
 
@@ -95,6 +114,10 @@ namespace Printer_InputClient_Net4._0.ViewModel
             GetPrint(PrinterName);
 
         }
+        private void BtnSaveCommand(object obj)
+        {
+            readExcelData.SaveExcelData(filePath, TestItems);
+        }
 
         private void GetPrint(string printerName) {
 
@@ -113,6 +136,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
 
         public ICommand BtnSend { get; set; }
+        public ICommand SaveCommand { get; set; }
 
         
         private string _printerName = string.Empty;
