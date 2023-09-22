@@ -63,10 +63,10 @@
 
         <!--Web Data-->
         <Button Grid.Row="7" Margin="12"
-                Style="{StaticResource Graph_btn}"
-                Command="{Binding btData}" >
+                Style="{StaticResource Capture_btn}"
+                Command="{Binding BtnCapture}" >
             <Button.Background>
-                <ImageBrush ImageSource="D:\0.DefaultFile\JinYunki\BoxLabe(23.07.20)\Leak_UI\Leak_UI\Assets\img_dataList_default.png"/>
+                <ImageBrush ImageSource="D:\0.DefaultFile\JinYunki\Printer_InputClient_Net4.0\Printer_InputClient_Net4.0\Assets\img_capture.png"/>
             </Button.Background>
         </Button>
     </Grid>

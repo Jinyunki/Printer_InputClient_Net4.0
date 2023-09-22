@@ -7,23 +7,42 @@
              mc:Ignorable="d" 
              DataContext="{Binding Main, Source={StaticResource Locator}}"
              d:DesignHeight="900" d:DesignWidth="1600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="D:\0.DefaultFile\JinYunki\Printer_InputClient_Net4.0\Printer_InputClient_Net4.0\GuiDesignDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="8*"/>
+            </Grid.ColumnDefinitions>
             <TextBlock Text="{Binding WorkSheetName}" Background="Black" Foreground="White" FontSize="25" Margin="3"/>
         </Grid>
 
-        <Grid Grid.Row="1">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                          >
+                <Grid Grid.Column="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="8*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
 
                     <ItemsControl ItemsSource="{Binding PositionCategorise}" Grid.Column="0" Background="Black" Margin="3">
@@ -42,7 +61,6 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-
                     <ItemsControl ItemsSource="{Binding PositionData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Background="Black" Margin="3">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -58,12 +76,11 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
-                    <Button Content="TEST" Grid.Column="2" Command="{Binding SaveCommand}"/>
-                    <TextBlock Grid.Column="3" Text="{Binding InputPrinterCommand}" Background="White"/>
                 </Grid>
             </ScrollViewer>
+            <TextBlock Grid.Column="1" Text="{Binding InputPrinterCommand}" Foreground="White"
+                       TextWrapping="Wrap"/>
         </Grid>
-
+        <Button Content="TEST" Grid.Row="3" Command="{Binding SaveCommand}"/>
     </Grid>
 </UserControl>

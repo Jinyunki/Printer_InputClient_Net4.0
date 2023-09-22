@@ -87,9 +87,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Command.cs" />
+    <Compile Include="Model\LabelPositionModel.cs" />
     <Compile Include="RawPrinterHelper.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\DataListView.xaml.cs">
+      <DependentUpon>DataListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\PositionDataView.xaml.cs">
       <DependentUpon>PositionDataView.xaml</DependentUpon>
     </Compile>
@@ -112,6 +116,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\DataListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\PositionDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -165,6 +173,18 @@
     <Resource Include="Assets\img_printer_white.png" />
     <Resource Include="Assets\img_Switch.png" />
     <Resource Include="Assets\img_today_dataList.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\img_capture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\img_capture_default.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\1.Project_Jyk_2023\Library\CaptureCommand\CaptureCommand\CaptureCommand.csproj">
+      <Project>{ABF04444-EB25-40EB-AC85-585C7F3A25C7}</Project>
+      <Name>CaptureCommand</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
