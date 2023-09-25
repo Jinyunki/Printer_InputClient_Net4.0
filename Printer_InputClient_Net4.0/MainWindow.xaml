@@ -7,17 +7,26 @@
         xmlns:view="clr-namespace:Printer_InputClient_Net4._0.View"
         mc:Ignorable="d" WindowState="{Binding WindowState}"
         WindowStyle="None" MouseDown="Window_MouseDown"
+        xmlns:vm="clr-namespace:Printer_InputClient_Net4._0.ViewModel"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
         Height="900" Width="1600" AllowsTransparency="True">
     <Window.Background>
         <SolidColorBrush Color="Transparent"/>
     </Window.Background>
-    <!--위쪽에 삽입 해야할 코드 : MouseDown="Window_MouseDown" Loaded="Window_Loaded"-->
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="D:\0.DefaultFile\JinYunki\Printer_InputClient_Net4.0\Printer_InputClient_Net4.0\GuiDesignDictionary.xaml" />
+                <ResourceDictionary Source="GuiDesignDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type vm:PositionDataViewModel}">
+                <view:PositionDataView/>
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type vm:MainViewModel}">
+                <view:SideTab/>
+            </DataTemplate>
+
         </ResourceDictionary>
     </Window.Resources>
     
@@ -66,9 +75,6 @@
                     <ContentControl Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
 
-                <Grid Grid.Column="1">
-                    <view:PositionDataView/>
-                </Grid>
             </Grid>
 
         </Grid>

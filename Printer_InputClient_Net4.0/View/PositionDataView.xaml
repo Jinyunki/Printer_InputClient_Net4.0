@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Printer_InputClient_Net4._0.View"
              mc:Ignorable="d" 
-             DataContext="{Binding Main, Source={StaticResource Locator}}"
+             DataContext="{Binding PositionDataViewModel, Source={StaticResource Locator}}"
              d:DesignHeight="900" d:DesignWidth="1600">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="D:\0.DefaultFile\JinYunki\Printer_InputClient_Net4.0\Printer_InputClient_Net4.0\GuiDesignDictionary.xaml" />
+                <ResourceDictionary Source="../GuiDesignDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -19,7 +19,6 @@
             <RowDefinition Height="50"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -61,7 +60,8 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <ItemsControl ItemsSource="{Binding PositionData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Background="Black" Margin="3">
+                    <ItemsControl ItemsSource="{Binding PositionData, Mode=TwoWay,
+                        UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Background="Black" Margin="3">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <!-- 가로 방향으로 배치하기 위해 StackPanel 사용 -->
@@ -78,9 +78,82 @@
                     </ItemsControl>
                 </Grid>
             </ScrollViewer>
-            <TextBlock Grid.Column="1" Text="{Binding InputPrinterCommand}" Foreground="White"
-                       TextWrapping="Wrap"/>
+            <TextBox Grid.Column="1" Text="{Binding InputPrinterCommand}" Foreground="Black"
+                       TextWrapping="Wrap" FontSize="20"/>
+
+            <TextBox Text="{Binding PrinterName}" Grid.Column="1" VerticalAlignment="Bottom"
+                     TextWrapping="Wrap" />
+            <Button Content="TestPrint" Grid.Column="1" VerticalAlignment="Bottom"
+                    HorizontalAlignment="Right" Command="{Binding TestPrint}"/>
+
+            <Grid Grid.Column="2" Background="Gray" ShowGridLines="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0" ShowGridLines="True" Margin="10" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="라벨 길이" Foreground="Black"  Grid.Row="0" FontSize="20"
+                               VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <TextBlock Text="라벨 넓이" Foreground="Black"  Grid.Row="1" FontSize="20"
+                               VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <TextBlock Text="프린트 영역 길이" Foreground="Black"  Grid.Row="2" FontSize="20"
+                               VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <TextBlock Text="프린트 영역 넓이" Foreground="Black"  Grid.Row="3" FontSize="20"
+                               VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                </Grid>
+
+                <Grid Grid.Column="1" ShowGridLines="True" Margin="10" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBox Text="{Binding LabelSizeY}" Foreground="Black"  Grid.Row="0" FontSize="20"
+                               VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding LabelSizeX}" Foreground="Black"  Grid.Row="1" FontSize="20"
+                               VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding PrintY}" Foreground="Black"  Grid.Row="2" FontSize="20"
+                               VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding PrintX}" Foreground="Black"  Grid.Row="3" FontSize="20"
+                               VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                </Grid>
+            </Grid>
         </Grid>
-        <Button Content="TEST" Grid.Row="3" Command="{Binding SaveCommand}"/>
     </Grid>
 </UserControl>

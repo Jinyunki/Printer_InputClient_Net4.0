@@ -2,15 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Printer_InputClient_Net4._0.View"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
              DataContext="{Binding Main, Source={StaticResource Locator}}"
              d:DesignHeight="600" d:DesignWidth="72">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="D:\0.DefaultFile\JinYunki\Printer_InputClient_Net4.0\Printer_InputClient_Net4.0\GuiDesignDictionary.xaml" />
+                <ResourceDictionary Source="../GuiDesignDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -30,7 +29,7 @@
                 Style="{StaticResource Home_btn}"
                 Command="{Binding btMainHome}" >
             <Button.Background>
-                <ImageBrush ImageSource="D:\0.DefaultFile\JinYunki\BoxLabe(23.07.20)\Leak_UI\Leak_UI\Assets\img_home_default.png"/>
+                <ImageBrush ImageSource="/Assets/img_home_default.png"/>
             </Button.Background>
         </Button>
 
@@ -39,7 +38,7 @@
                 Style="{StaticResource Recipe_btn}"
                 Command="{Binding btExcel}" >
             <Button.Background>
-                <ImageBrush ImageSource="D:\0.DefaultFile\JinYunki\BoxLabe(23.07.20)\Leak_UI\Leak_UI\Assets\img_excel_default.png"/>
+                <ImageBrush ImageSource="/Assets/img_excel_default.png"/>
             </Button.Background>
         </Button>
 
@@ -48,7 +47,7 @@
                 Style="{StaticResource Temporary_btn}"
                 Command="{Binding btTemporary}" >
             <Button.Background>
-                <ImageBrush ImageSource="D:\0.DefaultFile\JinYunki\BoxLabe(23.07.20)\Leak_UI\Leak_UI\Assets\img_barcode_default.png"/>
+                <ImageBrush ImageSource="/Assets/img_barcode_default.png"/>
             </Button.Background>
         </Button>
 
@@ -57,7 +56,7 @@
                 Style="{StaticResource Statistics_btn}"
                 Command="{Binding btStatistics}" >
             <Button.Background>
-                <ImageBrush ImageSource="D:\0.DefaultFile\JinYunki\BoxLabe(23.07.20)\Leak_UI\Leak_UI\Assets\img_graph_default.png"/>
+                <ImageBrush ImageSource="/Assets/img_graph_default.png"/>
             </Button.Background>
         </Button>
 
@@ -66,7 +65,7 @@
                 Style="{StaticResource Capture_btn}"
                 Command="{Binding BtnCapture}" >
             <Button.Background>
-                <ImageBrush ImageSource="D:\0.DefaultFile\JinYunki\Printer_InputClient_Net4.0\Printer_InputClient_Net4.0\Assets\img_capture.png"/>
+                <ImageBrush ImageSource="/Assets/img_graph_default.png"/>
             </Button.Background>
         </Button>
     </Grid>

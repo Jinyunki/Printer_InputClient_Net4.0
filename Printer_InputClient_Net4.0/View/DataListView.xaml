@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="D:\0.DefaultFile\JinYunki\Printer_InputClient_Net4.0\Printer_InputClient_Net4.0\GuiDesignDictionary.xaml" />
+                <ResourceDictionary Source="../GuiDesignDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -96,7 +96,7 @@
             </Button>
 
         </Grid>
-        <TextBlock Grid.Column="2" Grid.Row="1" x:Name="tb_Model" Text="{Binding Product_ID}" 
+        <TextBlock Grid.Column="2" Grid.Row="1" x:Name="tb_Model" Text="{Binding ModelName}" 
                                      FontSize="15" MinWidth="150" Style="{StaticResource font_style}"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 

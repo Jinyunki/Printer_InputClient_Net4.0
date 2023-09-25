@@ -1,20 +1,24 @@
 ﻿using GalaSoft.MvvmLight;
 using PrintCommand;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Printer_InputClient_Net4._0.Model
 {
     public class LabelPositionModel : ViewModelBase
     {
-
-        public static string FILEPATH = Path.Combine(@"D:\0.DefaultFile\JinYunki\Printer_InputClient_Net4.0\Printer_InputClient_Net4.0\bin\Data", "PrintPointRecipie.xlsx");
         public TPCLCommand tpclCommand = new TPCLCommand();
         public ReadExcelData readExcelData = new ReadExcelData();
+
+
+        private string _fileName;
+        public string FileName
+        {
+            get { return readExcelData.GetRecipeFile(_fileName); }
+            set {
+                _fileName = readExcelData.GetRecipeFile(value);
+                RaisePropertyChanged("FilePath");
+            }
+        }
 
         private string _printerName = string.Empty;
         public string PrinterName
@@ -74,40 +78,87 @@ namespace Printer_InputClient_Net4._0.Model
         private string _labelSizeX = string.Empty;
         public string LabelSizeX
         {
-            get { return ExcelTotalData[0][1]; }
+            get {
+                if (!string.IsNullOrEmpty(_labelSizeX))
+                {
+                    return _labelSizeX;
+                } else
+                {
+                    // 변경된 값이 없으면 원래 데이터를 반환
+                    return ExcelTotalData[0][1];
+                }
+            }
             set {
-                ExcelTotalData[0][1] = value;
-                RaisePropertyChanged("LabelSizeX");
+                if (_labelSizeX != value)
+                {
+                    _labelSizeX = value;
+                    RaisePropertyChanged("LabelSizeX");
+                }
             }
         }
-
         private string _labelSizeY = string.Empty;
         public string LabelSizeY
         {
-            get { return ExcelTotalData[1][1]; }
+            get {
+                if (!string.IsNullOrEmpty(_labelSizeY))
+                {
+                    return _labelSizeY;
+                } else
+                {
+                    // 변경된 값이 없으면 원래 데이터를 반환
+                    return ExcelTotalData[1][1];
+                }
+            }
             set {
-                ExcelTotalData[1][1] = value;
-                RaisePropertyChanged("LabelSizeY");
+                if (_labelSizeY != value)
+                {
+                    _labelSizeY = value;
+                    RaisePropertyChanged("LabelSizeY");
+                }
             }
         }
 
         private string _printX = string.Empty;
         public string PrintX
         {
-            get { return ExcelTotalData[2][1]; }
+            get {
+                if (!string.IsNullOrEmpty(_printX))
+                {
+                    return _printX;
+                } else
+                {
+                    // 변경된 값이 없으면 원래 데이터를 반환
+                    return ExcelTotalData[2][1];
+                }
+            }
             set {
-                ExcelTotalData[2][1] = value;
-                RaisePropertyChanged("PrintX");
+                if (_printX != value)
+                {
+                    _printX = value;
+                    RaisePropertyChanged("PrintX");
+                }
             }
         }
 
         private string _printY = string.Empty;
         public string PrintY
         {
-            get { return ExcelTotalData[3][1]; }
+            get {
+                if (!string.IsNullOrEmpty(_printY))
+                {
+                    return _printY;
+                } else
+                {
+                    // 변경된 값이 없으면 원래 데이터를 반환
+                    return ExcelTotalData[3][1];
+                }
+            }
             set {
-                ExcelTotalData[3][1] = value;
-                RaisePropertyChanged("PrintY");
+                if (_printY != value)
+                {
+                    _printY = value;
+                    RaisePropertyChanged("PrintY");
+                }
             }
         }
 

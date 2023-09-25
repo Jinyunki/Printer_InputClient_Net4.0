@@ -32,10 +32,6 @@ namespace Printer_InputClient_Net4._0
                 DragMove();
             }
         }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            
-        }
+        
     }
 }

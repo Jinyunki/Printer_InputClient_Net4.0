@@ -5,28 +5,22 @@ VisualStudioVersion = 15.0.34031.82
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Printer_InputClient_Net4.0", "Printer_InputClient_Net4.0\Printer_InputClient_Net4.0.csproj", "{3822AE5D-8687-4A69-99CD-17019D8A6733}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaptureCommand", "..\..\..\1.Project_Jyk_2023\Library\CaptureCommand\CaptureCommand\CaptureCommand.csproj", "{ABF04444-EB25-40EB-AC85-585C7F3A25C7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintCommand", "..\..\..\1.Project_Jyk_2023\Library\PrintCommand\PrintCommand\PrintCommand.csproj", "{87BEAD13-C3BC-4B86-A1BB-AB00A5FBD20E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3822AE5D-8687-4A69-99CD-17019D8A6733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3822AE5D-8687-4A69-99CD-17019D8A6733}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3822AE5D-8687-4A69-99CD-17019D8A6733}.Debug|x64.ActiveCfg = Debug|x64
+		{3822AE5D-8687-4A69-99CD-17019D8A6733}.Debug|x64.Build.0 = Debug|x64
 		{3822AE5D-8687-4A69-99CD-17019D8A6733}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3822AE5D-8687-4A69-99CD-17019D8A6733}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABF04444-EB25-40EB-AC85-585C7F3A25C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABF04444-EB25-40EB-AC85-585C7F3A25C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABF04444-EB25-40EB-AC85-585C7F3A25C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABF04444-EB25-40EB-AC85-585C7F3A25C7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{87BEAD13-C3BC-4B86-A1BB-AB00A5FBD20E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87BEAD13-C3BC-4B86-A1BB-AB00A5FBD20E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87BEAD13-C3BC-4B86-A1BB-AB00A5FBD20E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87BEAD13-C3BC-4B86-A1BB-AB00A5FBD20E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3822AE5D-8687-4A69-99CD-17019D8A6733}.Release|x64.ActiveCfg = Release|x64
+		{3822AE5D-8687-4A69-99CD-17019D8A6733}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -46,7 +46,7 @@
 
 
     <!--/Button_Icon/ Excel Recipe Button Style Template //-->
-    <ImageBrush x:Key="Recipe_btn_MouseOver" ImageSource="Assets\img_excel_event.png"/>
+    <ImageBrush x:Key="Recipe_btn_MouseOver" ImageSource="Assets/img_excel_event.png"/>
     <Style x:Key="Recipe_btn" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
@@ -70,7 +70,7 @@
     </Style>
 
     <!--/Button_Icon/ Temporary Button Style Template //-->
-    <ImageBrush x:Key="Temporary_btn_MouseOver" ImageSource="Assets\img_barcode_event.png"/>
+    <ImageBrush x:Key="Temporary_btn_MouseOver" ImageSource="Assets/img_barcode_event.png"/>
     <Style x:Key="Temporary_btn" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
