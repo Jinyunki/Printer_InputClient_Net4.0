@@ -44,14 +44,45 @@ namespace Printer_InputClient_Net4._0.ViewModel
         }
         public void PrinterSendTest22(string testText)
         {
+            byte[] utf8Bytes = Encoding.UTF8.GetBytes("한글 테스트");
+
             StringBuilder builder = new StringBuilder();
             builder.Append(tpclCommand._SetLabelSize(Double.Parse(LabelSizeY), Double.Parse(LabelSizeX), Double.Parse(PrintY), Double.Parse(PrintX))); // 라벨사이즈 지정
             builder.Append(tpclCommand._SetClearImageBuffer()); //클리어
-            builder.Append(tpclCommand._SetTrueFont(1, 500, 600, 80, 80, "E", 90, "B")); // 폰트셋팅
-            builder.Append(tpclCommand._SetTrueValueInput(1, testText)); // 폰트 데이터 인풋
+            //builder.Append(tpclCommand._SetTrueFont(1, 500, 600, 50, 50, "B", 270, "B")); // 폰트셋팅
+            //builder.Append(tpclCommand._SetTrueValueInput(1, testText)); // 폰트 데이터 인풋
+            builder.Append(SetPrintData(1, 180, 300, "24")); // 수량
+            builder.Append(SetPrintData(2, 180, 1200, "99240-AA010")); // 품번
+            builder.Append(SetPrintData(3, 250, 1200, "UNIT ASSY-RR VIEW CAMERA")); // 품명
+            builder.Append(SetPrintData(4, 340, 1200, "UNIT ASSY-RR VIEW CAMERA")); // 품명
+            builder.Append(SetPrintDataKorea(5, 440, 1200, "한글 테스트")); // 한글 테스트
+            builder.Append(SetPrintDataKoreaPC(6, 540, 1200, "한글 테스트")); // 한글 테스트
             builder.Append(tpclCommand._SetStartPrinting(1, 0, 1, 0, 1, 2, 0, 1));
             InputPrinterCommand = builder.ToString();
+        }
+        public string SetPrintData(double groupNum, double groupPositionX, double groupPositionY, string inputData)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetTrueFont(groupNum, groupPositionX, groupPositionY, 50, 50, "B", 270, "B")); // 폰트셋팅
+            builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
 
+            return builder.ToString();
+        }
+        public string SetPrintDataKorea(double groupNum, double groupPositionX, double groupPositionY, string inputData)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetTrueFont(groupNum, groupPositionX, groupPositionY, 50, 50, "21", 270, 1)); // 폰트셋팅
+            builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
+
+            return builder.ToString();
+        }
+        public string SetPrintDataKoreaPC(double groupNum, double groupPositionX, double groupPositionY, string inputData)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetBitmapFont(groupNum, groupPositionX, groupPositionY, 50, 50, "51", 270)); // 폰트셋팅
+            builder.Append(tpclCommand._SetBitmapValueInput(groupNum, inputData)); // 폰트 데이터 인풋
+
+            return builder.ToString();
         }
 
 
