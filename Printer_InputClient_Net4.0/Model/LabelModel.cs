@@ -1,13 +1,38 @@
-﻿using GalaSoft.MvvmLight;
-using PrintCommand;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Windows.Input;
 
 namespace Printer_InputClient_Net4._0.Model
 {
-    public class LabelPositionModel : ViewModelBase
+    public class LabelModel : MainModel
     {
-        public TPCLCommand tpclCommand = new TPCLCommand();
-        public ReadExcelData readExcelData = new ReadExcelData();
+
+        public ICommand BtnSend { get; set; }
+        public ICommand TestPrint { get; set; }
+
+
+
+        #region DataList
+
+        /// <summary>
+        /// 라이브러리를 통해 호출된 엑셀데이터를 받아온다
+        /// </summary>
+        /// <param name="selectSheet">엑셀 파일의 </param>
+        public void ReadExcelDataRecive(int selectSheet)
+        {
+            FileName = "PrintPointRecipie.xlsx";
+            readExcelData.ReadExcelDataList(FileName, selectSheet);
+
+            for (int i = 0; i < ExcelTotalData.Count; i++)
+            {
+                PositionCategorise.Add(ExcelTotalData[i][0]);
+                PositionData.Add(ExcelTotalData[i][1]);
+            }
+            WorkSheetName = readExcelData.wrokSheetName;
+        }
 
 
         private string _fileName;
@@ -19,6 +44,130 @@ namespace Printer_InputClient_Net4._0.Model
                 RaisePropertyChanged("FilePath");
             }
         }
+        
+        private string _formatDate = $"{DateTime.Now:yy}{(char)('a' + DateTime.Now.Month - 1)}{DateTime.Now:dd}";
+        public string FormatDate
+        {
+            get { return _formatDate; }
+            set {
+                _formatDate = value;
+                RaisePropertyChanged("FormatDate");
+            }
+        }
+
+        public ICommand BtnPrintCommand { get; set; }
+        private string _modelName;
+        public string ModelName
+        {
+            get { return _modelName; }
+            set {
+                _modelName = value;
+                RaisePropertyChanged("ModelName");
+            }
+        }
+        private string _barcodeData;
+        public string BarcodeData
+        {
+            get { return _barcodeData; }
+            set {
+                _barcodeData = value;
+                RaisePropertyChanged("BarcodeData");
+            }
+        }
+        private string _printCount = "24";
+        public string PrintCount
+        {
+            get { return _printCount; }
+            set {
+                _printCount = value;
+                RaisePropertyChanged("PrintCount");
+            }
+        }
+
+        private string _productNumber = "99240-AA010";
+        public string ProductNumber
+        {
+            get { return _productNumber; }
+            set {
+                _productNumber = value;
+                RaisePropertyChanged("ProductNumber");
+            }
+        }
+
+        private string _productName = "UNIT ASSY-RR VIEW CAMERA";
+        public string ProductName
+        {
+            get { return _productName; }
+            set {
+                _productName = value;
+                RaisePropertyChanged("ProductName");
+            }
+        }
+
+        private string _lotCount;
+        public string LotCount
+        {
+            get { return _lotCount; }
+            set {
+                _lotCount = value;
+                RaisePropertyChanged("LotCount");
+            }
+        }
+
+        private string _aground;
+        public string Aground
+        {
+            get { return _aground; }
+            set {
+                _aground = value;
+                RaisePropertyChanged("Aground");
+            }
+        }
+
+        private string _delivery;
+        public string Delivery
+        {
+            get { return _delivery; }
+            set {
+                _delivery = value;
+                RaisePropertyChanged("Delivery");
+            }
+        }
+
+        private string _codeName;
+        public string CodeName
+        {
+            get { return _codeName; }
+            set {
+                _codeName = value;
+                RaisePropertyChanged("CodeName");
+            }
+        }
+
+        private string _issueNumber;
+        public string IssueNumber
+        {
+            get { return _issueNumber; }
+            set {
+                _issueNumber = value;
+                RaisePropertyChanged("IssueNumber");
+            }
+        }
+
+        private string _labelType;
+        public string LabelType
+        {
+            get { return _labelType; }
+            set {
+                _labelType = value;
+                RaisePropertyChanged("LabelType");
+            }
+        }
+        #endregion
+
+
+        #region PositionData
+
 
         private string _printerName = string.Empty;
         public string PrinterName
@@ -35,7 +184,17 @@ namespace Printer_InputClient_Net4._0.Model
             get { return _inputPrinterCommand; }
             set {
                 _inputPrinterCommand = value;
-                RaisePropertyChanged(nameof(InputPrinterCommand));
+                RaisePropertyChanged("InputPrinterCommand");
+            }
+        }
+
+        private string _inputDataValue;
+        public string InputDataValue
+        {
+            get { return _inputDataValue; }
+            set {
+                _inputDataValue = value;
+                RaisePropertyChanged("InputDataValue");
             }
         }
 
@@ -501,5 +660,27 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
+        #endregion
+
+        #region defaultListUpdate
+        public string SetPrintDataTrueFont(double groupNum, double groupPositionX, double groupPositionY, string inputData)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetTrueFont(groupNum, groupPositionX, groupPositionY, 50, 50, "B", 270, "B")); // 폰트셋팅
+            builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
+
+            return builder.ToString();
+        }
+
+        public string SetBarcode(double groupNum, double groupPositionX, double groupPositionY, string barcodeData)
+        {
+            BarcodeData = ProductNumber + "  " + PrintCount + FormatDate;
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetBarcode(groupNum, groupPositionX, groupPositionY,"9",1,5,270,700));
+            builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, barcodeData));
+
+            return builder.ToString();
+        }
+        #endregion
     }
 }

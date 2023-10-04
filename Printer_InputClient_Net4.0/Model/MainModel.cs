@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using PrintCommand;
 using Printer_InputClient_Net4._0.ViewModel;
 using System;
 using System.Windows;
@@ -9,6 +10,8 @@ namespace Printer_InputClient_Net4._0.Model
 {
     public class MainModel : ViewModelBase
     {
+        public TPCLCommand tpclCommand = new TPCLCommand();
+        public ReadExcelData readExcelData = new ReadExcelData();
 
         #region Window State
         public void WinBtnEvent()
@@ -78,20 +81,6 @@ namespace Printer_InputClient_Net4._0.Model
             set {
                 _currentViewModel = value;
                 _currentViewModel.RaisePropertyChanged("CurrentViewModel");
-            }
-        }
-        private ViewModelBase _sideTab;
-        public ViewModelBase SideTab
-        {
-            get {
-                return _sideTab;
-            }
-            set {
-                if (_sideTab != value)
-                {
-                    _sideTab = value;
-                    _sideTab.RaisePropertyChanged("SideTab");
-                }
             }
         }
     }

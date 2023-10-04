@@ -15,7 +15,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<PositionDataViewModel>();
         }
-
+        
         public PositionDataViewModel PositionDataViewModel
         {
             get
