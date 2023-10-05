@@ -45,7 +45,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
         
-        private string _formatDate = $"{DateTime.Now:yy}{(char)('a' + DateTime.Now.Month - 1)}{DateTime.Now:dd}";
+        private string _formatDate = $"{DateTime.Now:yy}{(char)('A' + DateTime.Now.Month - 1)}{DateTime.Now:dd}";
         public string FormatDate
         {
             get { return _formatDate; }
@@ -65,7 +65,7 @@ namespace Printer_InputClient_Net4._0.Model
                 RaisePropertyChanged("ModelName");
             }
         }
-        private string _barcodeData;
+        private string _barcodeData ;
         public string BarcodeData
         {
             get { return _barcodeData; }
@@ -672,15 +672,52 @@ namespace Printer_InputClient_Net4._0.Model
             return builder.ToString();
         }
 
-        public string SetBarcode(double groupNum, double groupPositionX, double groupPositionY, string barcodeData)
+        public string SetBarcode(double groupNum, double groupPositionX, double groupPositionY, string countInput)
         {
-            BarcodeData = ProductNumber + "  " + PrintCount + FormatDate;
+            BarcodeData = ProductNumber + "  " + PrintCount + FormatDate + ConvertToCustomString(Int32.Parse(countInput));
             StringBuilder builder = new StringBuilder();
             builder.Append(tpclCommand._SetBarcode(groupNum, groupPositionX, groupPositionY,"9",1,5,270,700));
-            builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, barcodeData));
+            builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, BarcodeData));
 
             return builder.ToString();
         }
+
+        public string ConvertToCustomString(int number)
+        {
+            if (number >= 0 && number <= 10)
+            {
+                return $"000{number-1}";
+            } else if (number >= 11 && number <= 36)
+            {
+                char customChar = (char)('A' + (number - 11));
+                return $"000{customChar}";
+            } else
+            {
+                int baseNumber = (number - 36) / 26;
+                int remainder = (number - 36) % 26;
+                char customChar = (char)('0' + baseNumber);
+                char remainderChar = (char)('A' + remainder);
+                return $"{customChar}{remainderChar}";
+            }
+            //if (number >= 0 && number <= 9)
+            //{
+            //    return $"000{number}";
+            //} else if (number >= 10 && number <= 35)
+            //{
+            //    char customChar = (char)('A' + (number - 10));
+            //    return $"000{customChar}";
+            //} else
+            //{
+            //    int baseNumber = (number - 36) / 26;
+            //    int remainder = (number - 36) % 26;
+            //    char customChar = (char)('0' + baseNumber);
+            //    char remainderChar = (char)('A' + remainder);
+            //    return $"{customChar}{remainderChar}";
+            //}
+        }
+
+
+
         #endregion
     }
 }

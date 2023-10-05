@@ -31,7 +31,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
             builder.Append(SetPrintDataTrueFont(2, 180, 1200, ProductNumber)); // 품번
             builder.Append(SetPrintDataTrueFont(3, 250, 1200, ProductName)); // 품명11
             builder.Append(SetPrintDataTrueFont(4, 340, 1200, ProductName)); // 품명22
-            builder.Append(SetBarcode(5,400,1200, BarcodeData)); // 바코드데이터 {23.10.04 커맨드라이브러리 수정필요 }
+            builder.Append(SetBarcode(5,400,1200, LotCount)); // 바코드데이터 {23.10.04 커맨드라이브러리 수정필요 }
             InputDataValue = builder.ToString();
 
             PrinterSendTest();
