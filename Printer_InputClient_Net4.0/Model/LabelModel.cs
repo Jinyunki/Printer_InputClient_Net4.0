@@ -674,50 +674,108 @@ namespace Printer_InputClient_Net4._0.Model
 
         public string SetBarcode(double groupNum, double groupPositionX, double groupPositionY, string countInput)
         {
-            BarcodeData = ProductNumber + "  " + PrintCount + FormatDate + ConvertToCustomString(Int32.Parse(countInput));
+            BarcodeData = ProductNumber + "  " + PrintCount + FormatDate + GenerateOutput(int.Parse(countInput));
             StringBuilder builder = new StringBuilder();
             builder.Append(tpclCommand._SetBarcode(groupNum, groupPositionX, groupPositionY,"9",1,5,270,700));
             builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, BarcodeData));
 
             return builder.ToString();
         }
-
-        public string ConvertToCustomString(int number)
+        
+        public string ConvertOutput(int printCount)
         {
-            if (number >= 0 && number <= 10)
+            string output;
+            if (printCount > 0 && printCount <= 10) // 1~10
             {
-                return $"000{number-1}";
-            } else if (number >= 11 && number <= 36)
+                output = $"{printCount-1}";
+            } 
+            else // 11 이상
             {
-                char customChar = (char)('A' + (number - 11));
-                return $"000{customChar}";
-            } else
-            {
-                int baseNumber = (number - 36) / 26;
-                int remainder = (number - 36) % 26;
-                char customChar = (char)('0' + baseNumber);
-                char remainderChar = (char)('A' + remainder);
-                return $"{customChar}{remainderChar}";
+                if (printCount < 37) // 11~36
+                {
+                    char customChar = (char)('A' + (printCount - 11));
+                    output = $"{customChar}";
+                } 
+                else // 37 이상
+                {
+                    int remainder = printCount % 36;
+                    if (remainder > 0 && remainder <= 10)
+                    {
+                        output = $"{remainder-1}";
+                    }
+                    
+                    else
+                    {
+                        char remainderChar;
+                        if (remainder == 0)
+                        {
+                            remainderChar = 'Z';
+                        }
+                        
+                        else
+                        {
+                            remainderChar = (char)('A' + remainder - 11);
+                        }
+                        output = $"{remainderChar}";
+                    }
+                }
             }
-            //if (number >= 0 && number <= 9)
-            //{
-            //    return $"000{number}";
-            //} else if (number >= 10 && number <= 35)
-            //{
-            //    char customChar = (char)('A' + (number - 10));
-            //    return $"000{customChar}";
-            //} else
-            //{
-            //    int baseNumber = (number - 36) / 26;
-            //    int remainder = (number - 36) % 26;
-            //    char customChar = (char)('0' + baseNumber);
-            //    char remainderChar = (char)('A' + remainder);
-            //    return $"{customChar}{remainderChar}";
-            //}
+
+            return output;
         }
+        public string GenerateOutput(int printCount)
+        {
+            string returnValue = "범위 초과";
+            double temp = printCount / 36.01;
+            int a = (int)temp; // temp의 정수 값 (0~35.999)
+            double fractionalPart = temp - a; // 정수값을 뺸 소수점 값
+            int b = (int)fractionalPart * 10; // 소수점 0번째 값
 
+            // ( a = 0 )
+            if (a < 1)
+            {
+                if (b <= 3) // 소수점 0번째 값 < 3 (0~9) 총 10가지.
+                {
+                    returnValue = ConvertOutput(printCount); // 반환 할 값
+                    return "00" + a + returnValue;
+                } 
+                else // 소수점 0번째 값 > 3 (A~Z) 총 26가지.
+                {
+                    returnValue = ConvertOutput(printCount);// 반환 할 값
+                    return "00" + a + returnValue;
+                }
+            }
 
+            // ( 1 =< a < 36 )
+            else if (a >= 1 && a < 36) 
+            {
+                for (int i = 1; i <= 36; i++) // 이곳에서의 36은 한사이클 36의 제곱을 의미.
+                {
+                    if (i < temp && temp <= i+1)
+                    {
+                        if (b <= 3) // 소수점 0번째 값 < 3 (0~9) 총 10가지.
+                        {
+                            returnValue = ConvertOutput(printCount); // 반환 할 값
+                            return "00" + a + returnValue;
+                        } else // 소수점 0번째 값 > 3 (A~Z) 총 26가지.
+                        {
+                            returnValue = ConvertOutput(printCount);// 반환 할 값
+                            return "00" + a + returnValue;
+                        }
+                    }
+                }
+            }
 
+            // a > 36
+            else
+            {
+                returnValue = "출력 범위 초과";
+                return returnValue;
+            }
+
+            return returnValue;
+  
+        }
         #endregion
     }
 }
