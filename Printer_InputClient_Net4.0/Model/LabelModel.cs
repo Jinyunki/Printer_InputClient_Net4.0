@@ -56,7 +56,7 @@ namespace Printer_InputClient_Net4._0.Model
         }
 
         public ICommand BtnPrintCommand { get; set; }
-        private string _modelName;
+        private string _modelName = "modelName";
         public string ModelName
         {
             get { return _modelName; }
@@ -114,7 +114,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _aground;
+        private string _aground = "Korea";
         public string Aground
         {
             get { return _aground; }
@@ -124,7 +124,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _delivery;
+        private string _delivery = "R7A8";
         public string Delivery
         {
             get { return _delivery; }
@@ -663,20 +663,38 @@ namespace Printer_InputClient_Net4._0.Model
         #endregion
 
         #region defaultListUpdate
-        public string SetPrintDataTrueFont(double groupNum, double groupPositionX, double groupPositionY, string inputData)
+        public string SetPrintDataTrueFont(double groupNum, double groupPositionX, double groupPositionY, double fontSize,string inputData)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetTrueFont(groupNum, groupPositionX, groupPositionY, 50, 50, "B", 270, "B")); // 폰트셋팅
+            builder.Append(tpclCommand._SetTrueFont(groupNum, groupPositionX, groupPositionY, fontSize, fontSize, "B", 270, "B")); // 폰트셋팅
             builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
+
+            return builder.ToString();
+        }
+        
+        public string SetPrintDataTrueFont_Mini(double groupNum, double groupPositionX, double groupPositionY, string inputData)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetTrueFont(groupNum, groupPositionX, groupPositionY, 30, 30, "B", 270, "B")); // 폰트셋팅
+            builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
+
+            return builder.ToString();
+        }
+        public string SetPrintDataBitamp_Kor(double groupNum, double groupPositionX, double groupPositionY, string inputData)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetBitmapFont(groupNum, groupPositionX, groupPositionY, 1, 1, "51", 270, "B,+0000000000")); // 폰트셋팅
+            builder.Append(tpclCommand._SetBitmapValueInput(groupNum, inputData)); // 폰트 데이터 인풋
 
             return builder.ToString();
         }
 
         public string SetBarcode(double groupNum, double groupPositionX, double groupPositionY, string countInput)
         {
-            BarcodeData = ProductNumber + "  " + PrintCount + FormatDate + GenerateOutput(int.Parse(countInput));
+            string barcodeProductNumber = ProductNumber.Replace("-", "");
+            BarcodeData = barcodeProductNumber + "  " + PrintCount + FormatDate + GenerateOutput(int.Parse(countInput));
             StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetBarcode(groupNum, groupPositionX, groupPositionY,"9",1,5,270,700));
+            builder.Append(tpclCommand._SetBarcode(groupNum, groupPositionX, groupPositionY,"9",1,3,270,60));
             builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, BarcodeData));
 
             return builder.ToString();

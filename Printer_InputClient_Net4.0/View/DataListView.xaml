@@ -58,24 +58,28 @@
             </ComboBox>
         </Grid>
 
-        <TextBlock Grid.Column="1" Grid.Row="1"
+        <TextBlock Grid.Column="1" Grid.Row="1" Foreground="White"
                                    Text="Model Name" FontSize="15" 
                                    VerticalAlignment="Center" />
 
-        <TextBlock Grid.Column="1" Grid.Row="2" 
+        <TextBlock Grid.Column="1" Grid.Row="2"  Foreground="White"
                                    Text="Product Number" FontSize="15" 
                                    VerticalAlignment="Center" />
 
-        <TextBlock Grid.Column="1" Grid.Row="3"
+        <TextBlock Grid.Column="1" Grid.Row="3" Foreground="White"
                                    Text="Product Name" FontSize="15" 
                                    VerticalAlignment="Center" />
 
-        <TextBlock Grid.Column="1" Grid.Row="4"
+        <TextBlock Grid.Column="1" Grid.Row="4" Foreground="White"
                                    Text="Print Count" FontSize="15" 
                                    VerticalAlignment="Center" />
 
         <TextBlock Grid.Column="1" Grid.Row="5"
-                                   Text="TEST" FontSize="15" Foreground="Red"
+                                   Text="지역" FontSize="15" Foreground="White"
+                                   VerticalAlignment="Center" />
+
+        <TextBlock Grid.Column="1" Grid.Row="6"
+                                   Text="출력 개수" FontSize="15" Foreground="White"
                                    VerticalAlignment="Center" />
 
         <!--포트 상태/연결-->
@@ -92,7 +96,7 @@
                                      Style="{StaticResource Close_btn}" 
                                      Command="{Binding BtnPortConnectCommand}" >
                 <Button.Background>
-                    <ImageBrush ImageSource="D:\0.DefaultFile\JinYunki\BoxLabe(23.07.20)\Leak_UI\Leak_UI\Assets\closeBtn_default.png"/>
+                    <ImageBrush ImageSource="/Assets/closeBtn_default.png"/>
                 </Button.Background>
             </Button>
 
@@ -113,17 +117,20 @@
                                      FontSize="15" MinWidth="150"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 
-        <TextBox Grid.Column="2" Grid.Row="5" Text="{Binding LotCount}" 
+        <TextBox Grid.Column="2" Grid.Row="5" Text="{Binding Aground}" 
+                                     FontSize="15" MinWidth="150"
+                                     VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+        <TextBox Grid.Column="2" Grid.Row="6" Text="{Binding LotCount}" 
                                      FontSize="15" MinWidth="150"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 
 
-        <TextBlock Grid.Column="1" Grid.Row="6" Text="잔량 출력" 
-                           HorizontalAlignment="Left" VerticalAlignment="Center"
-                           Foreground="Red" FontSize="15"/>
+        <TextBlock Grid.Column="1" Grid.Row="7" Text="출력 버튼"  Foreground="White"
+                           HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"/>
 
 
-        <Grid Grid.Column="2" Grid.Row="6" >
+        <Grid Grid.Column="2" Grid.Row="7" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -133,14 +140,12 @@
                          Margin="0 15 15 15" 
                          Command="{Binding BtnPrintCommand}">
                 <Button.Background>
-                    <ImageBrush ImageSource="D:\0.DefaultFile\JinYunki\BoxLabe(23.07.20)\Leak_UI\Leak_UI\Assets\img_printer_white.png"/>
+                    <ImageBrush ImageSource="/Assets/img_printer_white.png"/>
                 </Button.Background>
             </Button>
         </Grid>
 
-        <TextBlock Grid.Column="1" Grid.Row="7" Text="재 발행" 
-                           HorizontalAlignment="Left" VerticalAlignment="Center"
-                           Foreground="Red" FontSize="15"/>
+        
 
         <!--<TextBox Grid.Column="1" Grid.Row="7" Text="{Binding PrintCount}"/>
             -->
