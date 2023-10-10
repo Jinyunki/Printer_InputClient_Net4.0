@@ -104,7 +104,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _lotCount;
+        private string _lotCount = "10";
         public string LotCount
         {
             get { return _lotCount; }

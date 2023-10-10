@@ -43,7 +43,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Style="{StaticResource font_style}"
+            <TextBlock Grid.Column="0" 
                            Text="PORT" FontSize="15"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left"/>
@@ -58,23 +58,23 @@
             </ComboBox>
         </Grid>
 
-        <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource font_style}"
+        <TextBlock Grid.Column="1" Grid.Row="1"
                                    Text="Model Name" FontSize="15" 
                                    VerticalAlignment="Center" />
 
-        <TextBlock Grid.Column="1" Grid.Row="2" Style="{StaticResource font_style}"
+        <TextBlock Grid.Column="1" Grid.Row="2" 
                                    Text="Product Number" FontSize="15" 
                                    VerticalAlignment="Center" />
 
-        <TextBlock Grid.Column="1" Grid.Row="3" Style="{StaticResource font_style}"
+        <TextBlock Grid.Column="1" Grid.Row="3"
                                    Text="Product Name" FontSize="15" 
                                    VerticalAlignment="Center" />
 
-        <TextBlock Grid.Column="1" Grid.Row="4" Style="{StaticResource font_style}"
+        <TextBlock Grid.Column="1" Grid.Row="4"
                                    Text="Print Count" FontSize="15" 
                                    VerticalAlignment="Center" />
 
-        <TextBlock Grid.Column="1" Grid.Row="5" Style="{StaticResource font_style}"
+        <TextBlock Grid.Column="1" Grid.Row="5"
                                    Text="TEST" FontSize="15" Foreground="Red"
                                    VerticalAlignment="Center" />
 
@@ -85,7 +85,7 @@
                 <ColumnDefinition Width="4*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" FontSize="15" Style="{StaticResource font_style}"
+            <TextBlock Grid.Column="0" FontSize="15"
                                    Text="{Binding ResultConnect}" VerticalAlignment="Center"/>
 
             <Button  x:Name="btn_PortConnect" Grid.Column="1" Margin="20"
