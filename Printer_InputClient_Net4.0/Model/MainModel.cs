@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using PrintCommand;
 using Printer_InputClient_Net4._0.ViewModel;
+using ExcelCommand;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -12,7 +13,14 @@ namespace Printer_InputClient_Net4._0.Model
     {
         public TPCLCommand tpclCommand = new TPCLCommand();
         public ReadExcelData readExcelData = new ReadExcelData();
-
+        public ReadRecive ReadDataRecive = new ReadRecive();
+        public enum RecipeSerial
+        {
+            MODEL_DATA = 0,
+            S_LABEL_POSITION = 1,
+            M_LABEL_POSITION = 2,
+            L_LABEL_POSITION = 3
+        }
         #region Window State
         public void WinBtnEvent()
         {

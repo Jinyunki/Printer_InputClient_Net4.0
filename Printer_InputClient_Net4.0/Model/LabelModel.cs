@@ -1,6 +1,8 @@
-﻿using System;
+﻿using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
@@ -13,35 +15,81 @@ namespace Printer_InputClient_Net4._0.Model
         public ICommand BtnSend { get; set; }
         public ICommand TestPrint { get; set; }
 
+        #region ExcelReadTest
+        
+
+        public ObservableCollection<ObservableCollection<string>> TestExcelData = new ObservableCollection<ObservableCollection<string>>();
+        public Dictionary<string, string> keyValuePairsX = new Dictionary<string, string>();
+        public Dictionary<string, string> keyValuePairsY = new Dictionary<string, string>();
+
+        public List<string> WorkSheetNameList = new List<string>();
 
 
-        #region DataList
 
-        /// <summary>
-        /// 라이브러리를 통해 호출된 엑셀데이터를 받아온다
-        /// </summary>
-        /// <param name="selectSheet">엑셀 파일의 </param>
-        public void ReadExcelDataRecive(int selectSheet)
+        public ObservableCollection<ObservableCollection<string>> CallingBackData(string path, int selectedSheet)
         {
-            FileName = "PrintPointRecipie.xlsx";
-            readExcelData.ReadExcelDataList(FileName, selectSheet);
-
-            for (int i = 0; i < ExcelTotalData.Count; i++)
+            string wrokSheetName;
+            using (var package = new ExcelPackage(new FileInfo(path)))
             {
-                PositionCategorise.Add(ExcelTotalData[i][0]);
-                PositionData.Add(ExcelTotalData[i][1]);
+                
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[selectedSheet]; // 시트 선택
+
+                ExcelWorksheets excelWorksheets = package.Workbook.Worksheets;
+                WorkSheetNameList.Clear();
+                for (int i = 0; i < excelWorksheets.Count; i++)
+                {
+                    WorkSheetNameList.Add(excelWorksheets[i].Name);
+                }
+
+                wrokSheetName = worksheet.Name;
+                int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
+                int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
+                
+                for (int col = 1; col <= colCount; col++)
+                {
+                    ObservableCollection<string> columnData = new ObservableCollection<string>();
+
+                    for (int row = 1; row <= rowCount; row++) // 열 제목도 데이터로 포함시키기 위해 1부터 시작
+                    {
+                        string cellValue = worksheet.Cells[row, col].Text;
+                        columnData.Add(cellValue);
+                    }
+
+                    TestExcelData.Add(columnData);
+                }
+
+                for (int i = 1; i < TestExcelData[0].Count; i++)
+                {
+                    string key = TestExcelData[0][i];
+                    string valueX = TestExcelData[1][i];
+                    string valueY = TestExcelData[2][i];
+                    keyValuePairsX[key] = valueX;
+                    keyValuePairsY[key] = valueY;
+                }
             }
-            WorkSheetName = readExcelData.wrokSheetName;
+            return TestExcelData;
         }
+        
+        #endregion
 
+        #region DataList        
 
-        private string _fileName;
+        private string _FileName;
         public string FileName
         {
-            get { return readExcelData.GetRecipeFile(_fileName); }
+            get { return readExcelData.GetRecipeFile(_FileName); }
             set {
-                _fileName = readExcelData.GetRecipeFile(value);
+                _FileName = readExcelData.GetRecipeFile(value);
                 RaisePropertyChanged("FilePath");
+            }
+        }
+        private string _modelFileName;
+        public string ModelFileName
+        {
+            get { return readExcelData.GetRecipeFile(_modelFileName); }
+            set {
+                _modelFileName = readExcelData.GetRecipeFile(value);
+                RaisePropertyChanged("ModelFileName");
             }
         }
         
@@ -74,7 +122,16 @@ namespace Printer_InputClient_Net4._0.Model
                 RaisePropertyChanged("BarcodeData");
             }
         }
-        private string _printCount = "24";
+        private string _company = "HyundaiMobis Co.,Ltd";
+        public string Company
+        {
+            get { return _company; }
+            set {
+                _company = value;
+                RaisePropertyChanged("Company");
+            }
+        }
+        private string _printCount = "10";
         public string PrintCount
         {
             get { return _printCount; }
@@ -104,7 +161,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _lotCount = "10";
+        private string _lotCount = "24";
         public string LotCount
         {
             get { return _lotCount; }
@@ -207,499 +264,63 @@ namespace Printer_InputClient_Net4._0.Model
                 RaisePropertyChanged(nameof(WorkSheetName));
             }
         }
-        //private ObservableCollection<ObservableCollection<string>> _excelTotalData = new ObservableCollection<ObservableCollection<string>>();
-        public ObservableCollection<ObservableCollection<string>> ExcelTotalData
-        {
-            get { return readExcelData.excelTotalData; }
-            set {
-                readExcelData.excelTotalData = value;
-                RaisePropertyChanged(nameof(ExcelTotalData));
-            }
-        }
-        private ObservableCollection<string> _positionCategorise = new ObservableCollection<string>();
-        public ObservableCollection<string> PositionCategorise
-        {
-            get { return _positionCategorise; }
-            set {
-                _positionCategorise = value;
-                RaisePropertyChanged(nameof(PositionCategorise));
-            }
-        }
-        private ObservableCollection<string> _positionData = new ObservableCollection<string>();
-        public ObservableCollection<string> PositionData
-        {
-            get { return _positionData; }
-            set {
-                _positionData = value;
-                RaisePropertyChanged(nameof(PositionData));
-            }
-        }
-        private string _labelSizeX = string.Empty;
-        public string LabelSizeX
-        {
-            get {
-                if (!string.IsNullOrEmpty(_labelSizeX))
-                {
-                    return _labelSizeX;
-                } else
-                {
-                    // 변경된 값이 없으면 원래 데이터를 반환
-                    return ExcelTotalData[0][1];
-                }
-            }
-            set {
-                if (_labelSizeX != value)
-                {
-                    _labelSizeX = value;
-                    RaisePropertyChanged("LabelSizeX");
-                }
-            }
-        }
-        private string _labelSizeY = string.Empty;
-        public string LabelSizeY
-        {
-            get {
-                if (!string.IsNullOrEmpty(_labelSizeY))
-                {
-                    return _labelSizeY;
-                } else
-                {
-                    // 변경된 값이 없으면 원래 데이터를 반환
-                    return ExcelTotalData[1][1];
-                }
-            }
-            set {
-                if (_labelSizeY != value)
-                {
-                    _labelSizeY = value;
-                    RaisePropertyChanged("LabelSizeY");
-                }
-            }
-        }
 
-        private string _printX = string.Empty;
-        public string PrintX
+        private string _factory = "GV";
+        public string Factory
         {
-            get {
-                if (!string.IsNullOrEmpty(_printX))
-                {
-                    return _printX;
-                } else
-                {
-                    // 변경된 값이 없으면 원래 데이터를 반환
-                    return ExcelTotalData[2][1];
-                }
-            }
+            get { return _factory; }
             set {
-                if (_printX != value)
-                {
-                    _printX = value;
-                    RaisePropertyChanged("PrintX");
-                }
+                _factory = value;
+                RaisePropertyChanged("Factory");
             }
         }
-
-        private string _printY = string.Empty;
-        public string PrintY
-        {
-            get {
-                if (!string.IsNullOrEmpty(_printY))
-                {
-                    return _printY;
-                } else
-                {
-                    // 변경된 값이 없으면 원래 데이터를 반환
-                    return ExcelTotalData[3][1];
-                }
-            }
-            set {
-                if (_printY != value)
-                {
-                    _printY = value;
-                    RaisePropertyChanged("PrintY");
-                }
-            }
-        }
-
-        private string _groundX = string.Empty;
-        public string GroundX
-        {
-            get { return _groundX; }
-            set {
-                _groundX = value;
-                RaisePropertyChanged("GroundX");
-            }
-        }
-
-        private string _groundY = string.Empty;
-        public string GroundY
-        {
-            get { return _groundY; }
-            set {
-                _groundY = value;
-                RaisePropertyChanged("GroundY");
-            }
-        }
-
-        private string _factoryX = string.Empty;
-        public string FactoryX
-        {
-            get { return _factoryX; }
-            set {
-                _factoryX = value;
-                RaisePropertyChanged("FactoryX");
-            }
-        }
-
-        private string _factoryY = string.Empty;
-        public string FactoryY
-        {
-            get { return _factoryY; }
-            set {
-                _factoryY = value;
-                RaisePropertyChanged("FactoryY");
-            }
-        }
-
-        private string _carNameX = string.Empty;
-        public string CarNameX
-        {
-            get { return _carNameX; }
-            set {
-                _carNameX = value;
-                RaisePropertyChanged("CarNameX");
-            }
-        }
-
-        private string _carNameY = string.Empty;
-        public string CarNameY
-        {
-            get { return _carNameY; }
-            set {
-                _carNameY = value;
-                RaisePropertyChanged("CarNameY");
-            }
-        }
-
-        private string _deliveryX = string.Empty;
-        public string DeliveryX
-        {
-            get { return _deliveryX; }
-            set {
-                _deliveryX = value;
-                RaisePropertyChanged("DeliveryX");
-            }
-        }
-
-        private string _deliveryY = string.Empty;
-        public string DeliveryY
-        {
-            get { return _deliveryY; }
-            set {
-                _deliveryY = value;
-                RaisePropertyChanged("DeliveryY");
-            }
-        }
-
-        private string _productNumX = string.Empty;
-        public string ProductNumX
-        {
-            get { return _productNumX; }
-            set {
-                _productNumX = value;
-                RaisePropertyChanged("ProductNumX");
-            }
-        }
-
-        private string _productNumY = string.Empty;
-        public string ProductNumY
-        {
-            get { return _productNumY; }
-            set {
-                _productNumY = value;
-                RaisePropertyChanged("ProductNumY");
-            }
-        }
-
-        private string _countX = string.Empty;
-        public string CountX
-        {
-            get { return _countX; }
-            set {
-                _countX = value;
-                RaisePropertyChanged("CountX");
-            }
-        }
-
-        private string _countY = string.Empty;
-        public string CountY
-        {
-            get { return _countY; }
-            set {
-                _countY = value;
-                RaisePropertyChanged("CountY");
-            }
-        }
-
-        private string _productNameX = string.Empty;
-        public string ProductNameX
-        {
-            get { return _productNameX; }
-            set {
-                _productNameX = value;
-                RaisePropertyChanged("ProductNameX");
-            }
-        }
-
-        private string _productNameY = string.Empty;
-        public string ProductNameY
-        {
-            get { return _productNameY; }
-            set {
-                _productNameY = value;
-                RaisePropertyChanged("ProductNameY");
-            }
-        }
-
-        private string _productColorX = string.Empty;
-        public string ProductColorX
-        {
-            get { return _productColorX; }
-            set {
-                _productColorX = value;
-                RaisePropertyChanged("ProductColorX");
-            }
-        }
-
-        private string _productColorY = string.Empty;
-        public string ProductColorY
-        {
-            get { return _productColorY; }
-            set {
-                _productColorY = value;
-                RaisePropertyChanged("ProductColorY");
-            }
-        }
-
-        private string _barcodeX = string.Empty;
-        public string BarcodeX
-        {
-            get { return _barcodeX; }
-            set {
-                _barcodeX = value;
-                RaisePropertyChanged("BarcodeX");
-            }
-        }
-
-        private string _barcodeY = string.Empty;
-        public string BarcodeY
-        {
-            get { return _barcodeY; }
-            set {
-                _barcodeY = value;
-                RaisePropertyChanged("BarcodeY");
-            }
-        }
-
-        private string _deliveryDateX = string.Empty;
-        public string DeliveryDateX
-        {
-            get { return _deliveryDateX; }
-            set {
-                _deliveryDateX = value;
-                RaisePropertyChanged("DeliveryDateX");
-            }
-        }
-
-        private string _deliveryDateY = string.Empty;
-        public string DeliveryDateY
-        {
-            get { return _deliveryDateY; }
-            set {
-                _deliveryDateY = value;
-                RaisePropertyChanged("DeliveryDateY");
-            }
-        }
-
-        private string _companyX = string.Empty;
-        public string CompanyX
-        {
-            get { return _companyX; }
-            set {
-                _companyX = value;
-                RaisePropertyChanged("CompanyX");
-            }
-        }
-
-        private string _companyY = string.Empty;
-        public string CompanyY
-        {
-            get { return _companyY; }
-            set {
-                _companyY = value;
-                RaisePropertyChanged("CompanyY");
-            }
-        }
-
-        private string _factorySerialX = string.Empty;
-        public string FactorySerialX
-        {
-            get { return _factorySerialX; }
-            set {
-                _factorySerialX = value;
-                RaisePropertyChanged("FactorySerialX");
-            }
-        }
-
-        private string _factorySerialY = string.Empty;
-        public string FactorySerialY
-        {
-            get { return _factorySerialY; }
-            set {
-                _factorySerialY = value;
-                RaisePropertyChanged("FactorySerialY");
-            }
-        }
-
-        private string _lotNoX = string.Empty;
-        public string LotNoX
-        {
-            get { return _lotNoX; }
-            set {
-                _lotNoX = value;
-                RaisePropertyChanged("LotNoX");
-            }
-        }
-
-        private string _lotNoY = string.Empty;
-        public string LotNoY
-        {
-            get { return _lotNoY; }
-            set {
-                _lotNoY = value;
-                RaisePropertyChanged("LotNoY");
-            }
-        }
-
-        private string _HPCX = string.Empty;
-        public string HPCX
-        {
-            get { return _HPCX; }
-            set {
-                _HPCX = value;
-                RaisePropertyChanged("HPCX");
-            }
-        }
-        private string _HPCY = string.Empty;
-        public string HPCY
-        {
-            get { return _HPCY; }
-            set {
-                _HPCY = value;
-                RaisePropertyChanged("HPCY");
-            }
-        }
-
-        private string _issueNumX = string.Empty;
-        public string IssueNumX
-        {
-            get { return _issueNumX; }
-            set {
-                _issueNumX = value;
-                RaisePropertyChanged("IssueNumX");
-            }
-        }
-
-        private string _issueNumY = string.Empty;
-        public string IssueNumY
-        {
-            get { return _issueNumY; }
-            set {
-                _issueNumY = value;
-                RaisePropertyChanged("IssueNumY");
-            }
-        }
-
-        private string _containerX = string.Empty;
-        public string ContainerX
-        {
-            get { return _containerX; }
-            set {
-                _containerX = value;
-                RaisePropertyChanged("ContainerX");
-            }
-        }
-
-        private string _containerY = string.Empty;
-        public string ContainerY
-        {
-            get { return _containerY; }
-            set {
-                _containerY = value;
-                RaisePropertyChanged("ContainerY");
-            }
-        }
-
-        private string _bigProductNameX = string.Empty;
-        public string BigProductNameX
-        {
-            get { return _bigProductNameX; }
-            set {
-                _bigProductNameX = value;
-                RaisePropertyChanged("BigProductNameX");
-            }
-        }
-
-        private string _bigProductNameY = string.Empty;
-        public string BigProductNameY
-        {
-            get { return _bigProductNameY; }
-            set {
-                _bigProductNameY = value;
-                RaisePropertyChanged("BigProductNameY");
-            }
-        }
+        
 
         #endregion
 
         #region defaultListUpdate
-        public string SetPrintDataTrueFont(double groupNum, double groupPositionX, double groupPositionY, double fontSize,string inputData)
+        public string SetPrintDataTrueFont(double groupNum, string groupPositionName, double fontSize,string inputData)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetTrueFont(groupNum, groupPositionX, groupPositionY, fontSize, fontSize, "B", 270, "B")); // 폰트셋팅
+            builder.Append(tpclCommand._SetTrueFont(groupNum, double.Parse(keyValuePairsY[groupPositionName]), double.Parse(keyValuePairsX[groupPositionName]), fontSize, fontSize, "B", 270, "B")); // 폰트셋팅
             builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
 
             return builder.ToString();
         }
         
-        public string SetPrintDataTrueFont_Mini(double groupNum, double groupPositionX, double groupPositionY, string inputData)
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetTrueFont(groupNum, groupPositionX, groupPositionY, 30, 30, "B", 270, "B")); // 폰트셋팅
-            builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
 
-            return builder.ToString();
-        }
-        public string SetPrintDataBitamp_Kor(double groupNum, double groupPositionX, double groupPositionY, string inputData)
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetBitmapFont(groupNum, groupPositionX, groupPositionY, 1, 1, "51", 270, "B,+0000000000")); // 폰트셋팅
-            builder.Append(tpclCommand._SetBitmapValueInput(groupNum, inputData)); // 폰트 데이터 인풋
-
-            return builder.ToString();
-        }
-
-        public string SetBarcode(double groupNum, double groupPositionX, double groupPositionY, string countInput)
+        public string SetBarcode(double groupNum, string groupPositionName, string countInput)
         {
             string barcodeProductNumber = ProductNumber.Replace("-", "");
-            BarcodeData = barcodeProductNumber + "  " + PrintCount + FormatDate + GenerateOutput(int.Parse(countInput));
+            BarcodeData = barcodeProductNumber + "  " + LotCount + FormatDate + GenerateOutput(int.Parse(countInput));
             StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetBarcode(groupNum, groupPositionX, groupPositionY,"9",1,3,270,60));
+            builder.Append(tpclCommand._SetBarcode(groupNum, double.Parse(keyValuePairsY[groupPositionName]), double.Parse(keyValuePairsX[groupPositionName]), "9",1,3,270,60));
             builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, BarcodeData));
 
             return builder.ToString();
         }
-        
+
+        public string SetPrintDataTrueFontBelow(double groupNum, string groupPositionName, double fontSize, string inputData)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetTrueFont(groupNum, double.Parse(keyValuePairsY[groupPositionName])+800, double.Parse(keyValuePairsX[groupPositionName]), fontSize, fontSize, "B", 270, "B")); // 폰트셋팅
+            builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
+
+            return builder.ToString();
+        }
+
+
+        public string SetBarcodeBelow(double groupNum, string groupPositionName, string countInput)
+        {
+            string barcodeProductNumber = ProductNumber.Replace("-", "");
+            BarcodeData = barcodeProductNumber + "  " + LotCount + FormatDate + GenerateOutput(int.Parse(countInput));
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetBarcode(groupNum, double.Parse(keyValuePairsY[groupPositionName])+800, double.Parse(keyValuePairsX[groupPositionName]), "9", 1, 3, 270, 60));
+            builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, BarcodeData));
+
+            return builder.ToString();
+        }
+
         public string ConvertOutput(int printCount)
         {
             string output;
@@ -748,40 +369,41 @@ namespace Printer_InputClient_Net4._0.Model
             int a = (int)temp; // temp의 정수 값 (0~35.999)
             double fractionalPart = temp - a; // 정수값을 뺸 소수점 값
             int b = (int)fractionalPart * 10; // 소수점 0번째 값
-
+            string convertA = "";
             // ( a = 0 )
             if (a < 1)
             {
-                if (b <= 3) // 소수점 0번째 값 < 3 (0~9) 총 10가지.
-                {
-                    returnValue = ConvertOutput(printCount); // 반환 할 값
-                    return "00" + a + returnValue;
-                } 
-                else // 소수점 0번째 값 > 3 (A~Z) 총 26가지.
-                {
-                    returnValue = ConvertOutput(printCount);// 반환 할 값
-                    return "00" + a + returnValue;
-                }
+                returnValue = ConvertOutput(printCount); // 반환 할 값
+                return "00" + a + returnValue;
             }
 
             // ( 1 =< a < 36 )
             else if (a >= 1 && a < 36) 
             {
-                for (int i = 1; i <= 36; i++) // 이곳에서의 36은 한사이클 36의 제곱을 의미.
+                if (a > 9) // a, 즉 두번째 자리의 정수치가 10이 넘을때
                 {
-                    if (i < temp && temp <= i+1)
+                    convertA = ConvertOutput(a + 1);
+                    for (int i = 1; i <= 36; i++) // 이곳에서의 36은 한사이클 36의 제곱을 의미.
                     {
-                        if (b <= 3) // 소수점 0번째 값 < 3 (0~9) 총 10가지.
+                        if (i < temp && temp <= i + 1)
                         {
                             returnValue = ConvertOutput(printCount); // 반환 할 값
-                            return "00" + a + returnValue;
-                        } else // 소수점 0번째 값 > 3 (A~Z) 총 26가지.
+                            return "00" + convertA + returnValue;
+                        }
+                    }
+                } 
+                else
+                {
+                    for (int i = 1; i <= 36; i++) // 이곳에서의 36은 한사이클 36의 제곱을 의미.
+                    {
+                        if (i < temp && temp <= i + 1)
                         {
-                            returnValue = ConvertOutput(printCount);// 반환 할 값
+                            returnValue = ConvertOutput(printCount); // 반환 할 값
                             return "00" + a + returnValue;
                         }
                     }
                 }
+                
             }
 
             // a > 36

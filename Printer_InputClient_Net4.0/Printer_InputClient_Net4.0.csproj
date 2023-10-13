@@ -70,6 +70,9 @@
     <Reference Include="EPPlus.System.Drawing, Version=6.1.1.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.System.Drawing.6.1.1\lib\net35\EPPlus.System.Drawing.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelCommand">
+      <HintPath>..\..\..\..\1.Project_Jyk_2023\Library\ExcelCommand\ExcelCommand\bin\Debug\ExcelCommand.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=0e453835af4ee6ce, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net40\GalaSoft.MvvmLight.dll</HintPath>
     </Reference>
@@ -107,6 +110,8 @@
     <Compile Include="Command.cs" />
     <Compile Include="Model\LabelModel.cs" />
     <Compile Include="Model\MainModel.cs" />
+    <Compile Include="Model\PositionDataModel.cs" />
+    <Compile Include="Model\ProductDataModel.cs" />
     <Compile Include="RawPrinterHelper.cs" />
     <Compile Include="ViewCapture.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -117,9 +122,6 @@
     </Compile>
     <Compile Include="View\PositionDataView.xaml.cs">
       <DependentUpon>PositionDataView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PositionListView.xaml.cs">
-      <DependentUpon>PositionListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SideTab.xaml.cs">
       <DependentUpon>SideTab.xaml</DependentUpon>
@@ -145,10 +147,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\PositionDataView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\PositionListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

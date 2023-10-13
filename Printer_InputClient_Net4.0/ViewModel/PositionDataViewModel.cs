@@ -1,5 +1,6 @@
 ﻿using Printer_InputClient_Net4._0.Model;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -13,12 +14,27 @@ namespace Printer_InputClient_Net4._0.ViewModel
     {
         public PositionDataViewModel()
         {
-
-            ReadExcelDataRecive(1);
-            TestPrint = new Command(BtnSendCommand); // 23.10.10 주석처리
+            FileName = "DataList.xlsx";
+            CallingBackData(FileName, (int)RecipeSerial.MODEL_DATA); // 모델 레시피 호출
+            //CallingBackData(FileName, (int)RecipeSerial.M_LABEL_POSITION); // Middle 포지션 레시피 호출
+            //ReadDataRecive.CallingBackData(FileName,1);
+            Console.WriteLine(TestExcelData.Count);
+            Console.WriteLine(WorkSheetNameList.Count);
+            //Console.WriteLine(ReadDataRecive.WorkSheetNameList.Count);
+            TestPrint = new Command(BtnSendCommand); 
             BtnPrintCommand = new Command(InputDataSend);
             PrinterName = "TEC B-SX8T (305 dpi)";
-            //PrinterName = FileName; // 23.10.10 주석처리
+        }
+
+        public Dictionary<int, object> selectedDataSheet = new Dictionary<int, object>();
+        public List<object> DataList = new List<object>();
+        public void SelectedData(int sheetNum)
+        {
+            for (int i = 1; i < WorkSheetNameList.Count; i++)
+            {
+                PositionDataModel position = new PositionDataModel();
+                DataList.Add(position);
+            }
         }
         private void InputDataSend(object obj)
         {
@@ -30,19 +46,36 @@ namespace Printer_InputClient_Net4._0.ViewModel
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(tpclCommand._SetPrintDensity(true,5,true));
-            builder.Append(SetPrintDataTrueFont(1, 90, 300, 30, Delivery)); // 납품 장소(minitext)
-            builder.Append(SetPrintDataTrueFont(2, 90, 750, 30, ModelName)); // ModelName
-            builder.Append(SetPrintDataTrueFont(3, 180, 300, 50, PrintCount)); // 수량 pv
-            builder.Append(SetPrintDataTrueFont(4, 180, 1200, 50, ProductNumber)); // 품번
-            builder.Append(SetPrintDataTrueFont(5, 250, 1200, 50, ProductName)); // 품명11
-            builder.Append(SetPrintDataTrueFont(6, 340, 1200, 50, ProductName)); // 품명22
-            builder.Append(SetBarcode(7,370,1200, LotCount)); //barcode
-            builder.Append(SetPrintDataTrueFont(8, 490, 680, 30, "HyundaiMobis Co.,Ltd")); // 업체명(minitext)
-            builder.Append(SetPrintDataTrueFont(9, 590, 910, 30, FormatDate)); // LotDate
-            builder.Append(SetPrintDataTrueFont(10, 640, 1200, 30, BarcodeData)); // 발행번호Text
-            builder.Append(SetPrintDataTrueFont(11, 700, 1200, 60, ProductName)); // Big 품명 33
-            builder.Append(SetPrintDataTrueFont(12, 50, 750, 30, Aground)); // 지역
-            //builder.Append(SetPrintDataBitamp_Kor(8, 540, 680, "한글 테스트")); // 업체명(minitext)
+            
+            builder.Append(SetPrintDataTrueFont(1, "납품장소", 30, Delivery)); // 납품 장소
+            builder.Append(SetPrintDataTrueFont(2, "모델명", 30, ModelName)); // ModelName
+            builder.Append(SetPrintDataTrueFont(3, "수량", 50, LotCount)); // 수량 pv
+            builder.Append(SetPrintDataTrueFont(4, "품번", 50, ProductNumber)); // 품번
+            builder.Append(SetPrintDataTrueFont(5, "품명1", 50, ProductName)); // 품명 11
+            builder.Append(SetPrintDataTrueFont(6, "품명2", 50, ProductName)); // 품명 22
+            builder.Append(SetBarcode(7, "바코드", PrintCount)); //barcode
+            builder.Append(SetPrintDataTrueFont(8, "업체명", 30, Company)); // 업체명
+            builder.Append(SetPrintDataTrueFont(9, "LotDate", 30, FormatDate)); // LotDate
+            builder.Append(SetPrintDataTrueFont(10, "발행 번호", 30, BarcodeData)); // 발행번호Text
+            builder.Append(SetPrintDataTrueFont(11, "품명3", 60, ProductName)); // 품명 33
+            builder.Append(SetPrintDataTrueFont(12, "지역", 30, Aground)); // 지역
+            builder.Append(SetPrintDataTrueFont(13, "공장", 30, Factory)); // 공장
+
+
+            builder.Append(SetPrintDataTrueFontBelow(14, "납품장소", 30, Delivery)); // 납품 장소
+            builder.Append(SetPrintDataTrueFontBelow(15, "모델명", 30, ModelName)); // ModelName
+            builder.Append(SetPrintDataTrueFontBelow(16, "수량", 50, LotCount)); // 수량 pv
+            builder.Append(SetPrintDataTrueFontBelow(17, "품번", 50, ProductNumber)); // 품번
+            builder.Append(SetPrintDataTrueFontBelow(18, "품명1", 50, ProductName)); // 품명 11
+            builder.Append(SetPrintDataTrueFontBelow(19, "품명2", 50, ProductName)); // 품명 22
+            builder.Append(SetBarcodeBelow(20, "바코드", PrintCount)); //barcode
+            builder.Append(SetPrintDataTrueFontBelow(21, "업체명", 30, Company)); // 업체명
+            builder.Append(SetPrintDataTrueFontBelow(22, "LotDate", 30, FormatDate)); // LotDate
+            builder.Append(SetPrintDataTrueFontBelow(23, "발행 번호", 30, BarcodeData)); // 발행번호Text
+            builder.Append(SetPrintDataTrueFontBelow(24, "품명3", 60, ProductName)); // 품명 33
+            builder.Append(SetPrintDataTrueFontBelow(25, "지역", 30, Aground)); // 지역
+            builder.Append(SetPrintDataTrueFontBelow(26, "공장", 30, Factory)); // 공장
+
             InputDataValue = builder.ToString();
 
             PrinterSendTest();
@@ -52,9 +85,8 @@ namespace Printer_InputClient_Net4._0.ViewModel
         {
             
             StringBuilder builder = new StringBuilder();
-            StringBuilder builderInputValue = new StringBuilder();
             
-            builder.Append(tpclCommand._SetLabelSize(Double.Parse(LabelSizeY), Double.Parse(LabelSizeX), Double.Parse(PrintY), Double.Parse(PrintX))); // 라벨사이즈 지정
+            builder.Append(tpclCommand._SetLabelSize(Double.Parse(keyValuePairsX["라벨"]), Double.Parse(keyValuePairsY["라벨"]), Double.Parse(keyValuePairsX["인쇄 영역"]), Double.Parse(keyValuePairsY["인쇄 영역"]))); // 라벨사이즈 지정
             builder.Append(tpclCommand._SetClearImageBuffer()); //클리어
             
             builder.Append(InputDataValue);
