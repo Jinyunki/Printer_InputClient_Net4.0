@@ -15,25 +15,49 @@ namespace Printer_InputClient_Net4._0.ViewModel
         public PositionDataViewModel()
         {
             FileName = "DataList.xlsx";
-            CallingBackData(FileName, (int)RecipeSerial.MODEL_DATA); // 모델 레시피 호출
-            //CallingBackData(FileName, (int)RecipeSerial.M_LABEL_POSITION); // Middle 포지션 레시피 호출
-            //ReadDataRecive.CallingBackData(FileName,1);
+            
             Console.WriteLine(TestExcelData.Count);
-            Console.WriteLine(WorkSheetNameList.Count);
-            //Console.WriteLine(ReadDataRecive.WorkSheetNameList.Count);
             TestPrint = new Command(BtnSendCommand); 
             BtnPrintCommand = new Command(InputDataSend);
             PrinterName = "TEC B-SX8T (305 dpi)";
+
+            testtest("99240-K3100");
+        }
+        public void testtest(string inputData)
+        {
+            GetReadModelRecipe(FileName); // 모델 레시피 호출 (File명 + sheetNumber)
+            for (int i = 0; i < productList.Count; i++) // i = CELL 가로 data
+            {
+                if (productList[i] is ProductDataModel product)
+                {
+                    if (inputData == product.ProductNumber) // 읽어온 데이터를 ProductNumber와 비교
+                    {
+                        GetReadLabelRecipe(FileName, product.LabelType);
+                        GetLabelData("라벨");
+                        //Console.WriteLine(product.LabelType);
+                        //Console.WriteLine(product.ModelName);
+                    }
+                    
+                }
+            }
         }
 
-        public Dictionary<int, object> selectedDataSheet = new Dictionary<int, object>();
-        public List<object> DataList = new List<object>();
-        public void SelectedData(int sheetNum)
+        // 23.10.16~ 데이터값을 참조하여 TPCL커맨드 구현 해야함. 담아서 처리할것인가 바로 처리할것인가 ?에 대한 고찰
+        // 1. 한번에 값을 참조하여 바로명령하는 방법
+        // 2. 각각 파라메터를 통하여 들어오는 값에 대한 Data만 수신하는 방법
+        public void GetLabelData(string inputLabelData)
         {
-            for (int i = 1; i < WorkSheetNameList.Count; i++)
+            for (int i = 1; i < productList.Count; i++) // i = CELL 가로 data
             {
-                PositionDataModel position = new PositionDataModel();
-                DataList.Add(position);
+                if (recipeList[i] is PositionDataModel labelData)
+                {
+                    if (labelData.Category == inputLabelData) // 읽어온 데이터를 ProductNumber와 비교
+                    {
+                        Console.WriteLine(inputLabelData + " 의 X포지션 값은 : " + labelData.XPosition);
+                        Console.WriteLine(inputLabelData + " 의 Y포지션 값은 : " +labelData.YPosition);
+                    }
+
+                }
             }
         }
         private void InputDataSend(object obj)
@@ -45,7 +69,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
         public void ValueUpdateTrigger()
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetPrintDensity(true,5,true));
+            builder.Append(tpclCommand._SetPrintDensity(true,4,true));
             
             builder.Append(SetPrintDataTrueFont(1, "납품장소", 30, Delivery)); // 납품 장소
             builder.Append(SetPrintDataTrueFont(2, "모델명", 30, ModelName)); // ModelName
@@ -83,7 +107,6 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
         public void PrinterSendTest()
         {
-            
             StringBuilder builder = new StringBuilder();
             
             builder.Append(tpclCommand._SetLabelSize(Double.Parse(keyValuePairsX["라벨"]), Double.Parse(keyValuePairsY["라벨"]), Double.Parse(keyValuePairsX["인쇄 영역"]), Double.Parse(keyValuePairsY["인쇄 영역"]))); // 라벨사이즈 지정
@@ -98,6 +121,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
         private void BtnSendCommand(object obj)
         {
+            CallingBackData(FileName, 2); // Middle 포지션 레시피 호출
             ValueUpdateTrigger();
         }
         

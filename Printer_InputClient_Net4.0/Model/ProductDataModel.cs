@@ -98,6 +98,16 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
+        private string _today;
+        public string Today
+        {
+            get { return _today; }
+            set {
+                _today = value;
+                RaisePropertyChanged("Today");
+            }
+        }
+
         private string _serialNumber;
         public string SerialNumber
         {
