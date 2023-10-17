@@ -21,32 +21,21 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="4*"/>
-            </Grid.ColumnDefinitions>
-            
-        </Grid>
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
 
-            <Grid Grid.Column="2">
+            <Grid Grid.Column="1">
                 <view:DataListView/>
             </Grid>
 
-            <TextBox Grid.Column="1" Text="{Binding InputPrinterCommand}" Foreground="Black"
+            <TextBox Grid.Column="0" Text="{Binding InputPrinterCommand}" Foreground="Black"
                        TextWrapping="Wrap" FontSize="20"/>
 
             <TextBox Text="{Binding PrinterName}" Grid.Column="1" VerticalAlignment="Bottom"

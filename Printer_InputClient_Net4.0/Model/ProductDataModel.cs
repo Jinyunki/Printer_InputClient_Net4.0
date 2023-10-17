@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace Printer_InputClient_Net4._0.Model
 {
-    public class ProductDataModel : MainModel
+    public class ProductDataModel : LabelModel
     {
         private string _modelName;
         public string ModelName
@@ -18,7 +18,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _productNumber;
+        private string _productNumber = "99240-K3100";
         public string ProductNumber
         {
             get { return _productNumber; }
@@ -113,8 +113,18 @@ namespace Printer_InputClient_Net4._0.Model
         {
             get { return _serialNumber; }
             set {
-                _serialNumber = value;
+                _serialNumber = _productNumber.Replace("-", "") + "  " + LotCount + FormatDate ;
                 RaisePropertyChanged("SerialNumber");
+            }
+        }
+
+        private string _printCount = "10";
+        public string PrintCount
+        {
+            get { return _printCount; }
+            set {
+                _printCount = value;
+                RaisePropertyChanged("PrintCount");
             }
         }
 

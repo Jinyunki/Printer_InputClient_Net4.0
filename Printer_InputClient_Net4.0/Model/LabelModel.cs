@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
@@ -11,66 +10,53 @@ namespace Printer_InputClient_Net4._0.Model
 {
     public class LabelModel : MainModel
     {
-
-        public ICommand BtnSend { get; set; }
+        
         public ICommand TestPrint { get; set; }
 
         #region ExcelReadTest
         
-
-        public ObservableCollection<ObservableCollection<string>> TestExcelData = new ObservableCollection<ObservableCollection<string>>();
         public ObservableCollection<object> productList = new ObservableCollection<object>();
         public ObservableCollection<object> recipeList = new ObservableCollection<object>();
-        public Dictionary<string, string> keyValuePairsX = new Dictionary<string, string>();
-        public Dictionary<string, string> keyValuePairsY = new Dictionary<string, string>();
+
+        public Dictionary<string, double> keyValuePositionX = new Dictionary<string, double>();
+        public Dictionary<string, double> keyValuePositionY = new Dictionary<string, double>();
 
         public List<string> WorkSheetNameList = new List<string>();
-        
 
-        public ObservableCollection<ObservableCollection<string>> CallingBackData(string path, int selectedSheet)
+        public void UpdateExcelData(string path, string desiredProductName, string desiredValue)
         {
-            string wrokSheetName;
             using (var package = new ExcelPackage(new FileInfo(path)))
             {
-                
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[selectedSheet]; // 시트 선택
-
-                ExcelWorksheets excelWorksheets = package.Workbook.Worksheets;
-                WorkSheetNameList.Clear();
-                for (int i = 0; i < excelWorksheets.Count; i++)
-                {
-                    WorkSheetNameList.Add(excelWorksheets[i].Name);
-                }
-
-                wrokSheetName = worksheet.Name;
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // 시트 선택
                 int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
                 int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
-                
-                for (int col = 1; col <= colCount; col++)
+
+
+                // 원하는 조건에 따라 특정 셀의 값을 업데이트합니다.
+                for (int row = 1; row <= rowCount; row++)
                 {
-                    ObservableCollection<string> columnData = new ObservableCollection<string>();
-                    for (int row = 1; row <= rowCount; row++) // 열 제목도 데이터로 포함시키기 위해 1부터 시작
+                    string productNumber = worksheet.Cells[row, 2].Text; // 예를 들어 ProductName을 기준으로 찾는다면 3번째 열에 해당합니다.
+                    if (productNumber == desiredProductName)
                     {
-                        string cellValue = worksheet.Cells[row, col].Text;
-                        columnData.Add(cellValue);
+                        // 날짜가 오늘날짜이면 PrintCount를 증가 시키고,
+                        if (worksheet.Cells[row, 10].Value.ToString() == FormatDate)
+                        {
+                            worksheet.Cells[row, 12].Value = desiredValue; // PrintCount 값 변경
+                        } 
+                        // 날짜가 프로그램 빌드 실행시 받는 날짜가 달라지면, PrintCount를 0으로 초기화 , 날짜를 오늘날짜로 변경
+                        else
+                        {
+                            worksheet.Cells[row, 12].Value = "0"; // PrintCount 값 변경
+                            worksheet.Cells[row, 10].Value = FormatDate; // PrintCount 값 변경
+                        }
+                        
+                        
                     }
+                }
 
-                    TestExcelData.Add(columnData);
-                }
-                
-                for (int i = 1; i < TestExcelData[0].Count; i++)
-                {
-                    string key = TestExcelData[0][i];
-                    string valueX = TestExcelData[1][i];
-                    string valueY = TestExcelData[2][i];
-                    keyValuePairsX[key] = valueX;
-                    keyValuePairsY[key] = valueY;
-                }
-                
+                package.Save(); // 변경된 내용을 원본 파일에 저장합니다.
             }
-            return TestExcelData;
         }
-
 
         public ObservableCollection<object> GetReadModelRecipe(string path)
         {
@@ -112,7 +98,8 @@ namespace Printer_InputClient_Net4._0.Model
                         Factory = columnData[7],
                         LabelType = columnData[8],
                         Today = columnData[9],
-                        SerialNumber = columnData[10]
+                        SerialNumber = columnData[10],
+                        PrintCount = columnData[11]
                     });
                 }
                 package.Dispose();
@@ -204,122 +191,8 @@ namespace Printer_InputClient_Net4._0.Model
         }
 
         public ICommand BtnPrintCommand { get; set; }
-        private string _modelName = "modelName";
-        public string ModelName
-        {
-            get { return _modelName; }
-            set {
-                _modelName = value;
-                RaisePropertyChanged("ModelName");
-            }
-        }
-        private string _barcodeData ;
-        public string BarcodeData
-        {
-            get { return _barcodeData; }
-            set {
-                _barcodeData = value;
-                RaisePropertyChanged("BarcodeData");
-            }
-        }
-        private string _company = "HyundaiMobis Co.,Ltd";
-        public string Company
-        {
-            get { return _company; }
-            set {
-                _company = value;
-                RaisePropertyChanged("Company");
-            }
-        }
-        private string _printCount = "10";
-        public string PrintCount
-        {
-            get { return _printCount; }
-            set {
-                _printCount = value;
-                RaisePropertyChanged("PrintCount");
-            }
-        }
-
-        private string _productNumber = "99240-H9200";
-        public string ProductNumber
-        {
-            get { return _productNumber; }
-            set {
-                _productNumber = value;
-                RaisePropertyChanged("ProductNumber");
-            }
-        }
-
-        private string _productName = "UNIT ASSY-RR VIEW CAMERA";
-        public string ProductName
-        {
-            get { return _productName; }
-            set {
-                _productName = value;
-                RaisePropertyChanged("ProductName");
-            }
-        }
-
-        private string _lotCount = "24";
-        public string LotCount
-        {
-            get { return _lotCount; }
-            set {
-                _lotCount = value;
-                RaisePropertyChanged("LotCount");
-            }
-        }
-
-        private string _aground = "Korea";
-        public string Aground
-        {
-            get { return _aground; }
-            set {
-                _aground = value;
-                RaisePropertyChanged("Aground");
-            }
-        }
-
-        private string _delivery = "R7A8";
-        public string Delivery
-        {
-            get { return _delivery; }
-            set {
-                _delivery = value;
-                RaisePropertyChanged("Delivery");
-            }
-        }
-
-        private string _codeName;
-        public string CodeName
-        {
-            get { return _codeName; }
-            set {
-                _codeName = value;
-                RaisePropertyChanged("CodeName");
-            }
-        }
-
-        private string _issueNumber;
-        public string IssueNumber
-        {
-            get { return _issueNumber; }
-            set {
-                _issueNumber = value;
-                RaisePropertyChanged("IssueNumber");
-            }
-        }
-
-        private string _labelType;
-        public string LabelType
-        {
-            get { return _labelType; }
-            set {
-                _labelType = value;
-                RaisePropertyChanged("LabelType");
-            }
-        }
+        
+        
         #endregion
 
 
@@ -365,58 +238,59 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _factory = "GV";
-        public string Factory
-        {
-            get { return _factory; }
-            set {
-                _factory = value;
-                RaisePropertyChanged("Factory");
-            }
-        }
-        
+        public static string FONT_SMALL = "SmallFontSize";
+        public static string FONT_MEDIUM = "MediumFontSize";
+        public static string FONT_LARGE = "LargeFontSize";
 
         #endregion
 
         #region defaultListUpdate
-        public string SetPrintDataTrueFont(double groupNum, string groupPositionName, double fontSize,string inputData)
+
+        public string SetSizeAndPrintDensity(string labelSize, string printArea, int inkDnst)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetTrueFont(groupNum, double.Parse(keyValuePairsY[groupPositionName]), double.Parse(keyValuePairsX[groupPositionName]), fontSize, fontSize, "B", 270, "B")); // 폰트셋팅
+
+            builder.Append(tpclCommand._SetLabelSize(keyValuePositionX[labelSize], keyValuePositionY[labelSize], keyValuePositionX[printArea], keyValuePositionY[printArea])); // 라벨사이즈 지정
+            builder.Append(tpclCommand._SetClearImageBuffer()); //클리어
+            builder.Append(tpclCommand._SetPrintDensity(true, inkDnst, true)); // 인쇄 농도
+
+            return builder.ToString();
+        }
+        public string SetPrintDataTrueFont(double groupNum, string groupPositionName, string fontSize,string inputData)
+        {
+            
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetTrueFont(groupNum, (keyValuePositionY[groupPositionName]), (keyValuePositionX[groupPositionName]), keyValuePositionY[fontSize], keyValuePositionX[fontSize], "B", 270, "B")); // 폰트셋팅
             builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
 
             return builder.ToString();
         }
         
 
-        public string SetBarcode(double groupNum, string groupPositionName, string countInput)
+        public string SetBarcode(double groupNum, string groupPositionName, string barcodeData)
         {
-            string barcodeProductNumber = ProductNumber.Replace("-", "");
-            BarcodeData = barcodeProductNumber + "  " + LotCount + FormatDate + GenerateOutput(int.Parse(countInput));
             StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetBarcode(groupNum, double.Parse(keyValuePairsY[groupPositionName]), double.Parse(keyValuePairsX[groupPositionName]), "9",1,3,270,60));
-            builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, BarcodeData));
+            builder.Append(tpclCommand._SetBarcode(groupNum, (keyValuePositionY[groupPositionName]), (keyValuePositionX[groupPositionName]), "9",1,3,270,60));
+            builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, barcodeData));
 
             return builder.ToString();
         }
 
-        public string SetPrintDataTrueFontBelow(double groupNum, string groupPositionName, double fontSize, string inputData)
+        public string SetPrintDataTrueFontBelow(double groupNum, string groupPositionName, string fontSize, string inputData)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetTrueFont(groupNum, double.Parse(keyValuePairsY[groupPositionName])+800, double.Parse(keyValuePairsX[groupPositionName]), fontSize, fontSize, "B", 270, "B")); // 폰트셋팅
+            builder.Append(tpclCommand._SetTrueFont(groupNum, (keyValuePositionY[groupPositionName])+800, (keyValuePositionX[groupPositionName]), keyValuePositionY[fontSize], keyValuePositionY[fontSize], "B", 270, "B")); // 폰트셋팅
             builder.Append(tpclCommand._SetTrueValueInput(groupNum, inputData)); // 폰트 데이터 인풋
 
             return builder.ToString();
         }
 
 
-        public string SetBarcodeBelow(double groupNum, string groupPositionName, string countInput)
+        public string SetBarcodeBelow(double groupNum, string groupPositionName, string barcodeData)
         {
-            string barcodeProductNumber = ProductNumber.Replace("-", "");
-            BarcodeData = barcodeProductNumber + "  " + LotCount + FormatDate + GenerateOutput(int.Parse(countInput));
             StringBuilder builder = new StringBuilder();
-            builder.Append(tpclCommand._SetBarcode(groupNum, double.Parse(keyValuePairsY[groupPositionName])+800, double.Parse(keyValuePairsX[groupPositionName]), "9", 1, 3, 270, 60));
-            builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, BarcodeData));
+            builder.Append(tpclCommand._SetBarcode(groupNum, (keyValuePositionY[groupPositionName])+800, (keyValuePositionX[groupPositionName]), "9", 1, 3, 270, 60));
+            builder.Append(tpclCommand._SetBarcodeValueInput(groupNum, barcodeData));
 
             return builder.ToString();
         }
