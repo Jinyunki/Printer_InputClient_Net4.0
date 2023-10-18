@@ -40,6 +40,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
                         LotCount = product.LotCount;
                         Ground = product.Ground;
                         Factory = product.Factory;
+                        Barcode = product.SerialNumber + GenerateOutput(int.Parse(PrintCount) + int.Parse(product.PrintCount));
                         //PrintCount = product.PrintCount;
                         CommandTPCL(product.Delivery, product.ModelName, product.LotCount, product.ProductNumber, product.ProductName, product.Company, product.Ground, product.Factory, product.SerialNumber, product.PrintCount);
                     } 
@@ -59,7 +60,8 @@ namespace Printer_InputClient_Net4._0.ViewModel
             builder.Append(SetPrintDataTrueFont(++groupNumber, "품번", FONT_MEDIUM, productNumber)); // 품번
             builder.Append(SetPrintDataTrueFont(++groupNumber, "품명1", FONT_MEDIUM, productName)); // 품명 11
             builder.Append(SetPrintDataTrueFont(++groupNumber, "품명2", FONT_MEDIUM, productName)); // 품명 22
-            builder.Append(SetBarcode(++groupNumber, "바코드", serialNumber + GenerateOutput(int.Parse(PrintCount) + int.Parse(printCount)))); //barcodeData
+            //builder.Append(SetBarcode(++groupNumber, "바코드", serialNumber + GenerateOutput(int.Parse(PrintCount) + int.Parse(printCount)))); //barcodeData
+            builder.Append(SetBarcode(++groupNumber, "바코드", Barcode)); //barcodeData
             builder.Append(SetPrintDataTrueFont(++groupNumber, "업체명", FONT_SMALL, company)); // 업체명
             builder.Append(SetPrintDataTrueFont(++groupNumber, "LotDate", FONT_SMALL, FormatDate)); // LotDate
             builder.Append(SetPrintDataTrueFont(++groupNumber, "발행 번호", FONT_SMALL, serialNumber)); // 발행번호Text
@@ -73,7 +75,8 @@ namespace Printer_InputClient_Net4._0.ViewModel
             builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품번", FONT_MEDIUM, productNumber)); // 품번
             builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품명1", FONT_MEDIUM, productName)); // 품명 11
             builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품명2", FONT_MEDIUM, productName)); // 품명 22
-            builder.Append(SetBarcodeBelow(++groupNumber, "바코드", serialNumber + GenerateOutput(int.Parse(PrintCount) + int.Parse(printCount)))); //barcodeData
+            //builder.Append(SetBarcodeBelow(++groupNumber, "바코드", serialNumber + GenerateOutput(int.Parse(PrintCount) + int.Parse(printCount)))); //barcodeData
+            builder.Append(SetBarcodeBelow(++groupNumber, "바코드", Barcode)); //barcodeData
             builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "업체명", FONT_SMALL, company)); // 업체명
             builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "LotDate", FONT_SMALL, FormatDate)); // LotDate
             builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "발행 번호", FONT_SMALL, serialNumber)); // 발행번호Text
@@ -82,7 +85,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
             builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "공장", FONT_SMALL, factory)); // 공장
 
             InputDataValue = builder.ToString();
-            builder.Append(tpclCommand._SetStartPrinting(1, 0, 1, 0, 1, 2, 0, 1));
+            builder.Append(tpclCommand._SetStartPrinting(double.Parse(PrintCount), 0, 1, 0, 1, 2, 0, 1));
 
             UpdateExcelData(FileName, productNumber, (int.Parse(PrintCount) + int.Parse(printCount)).ToString());
         }

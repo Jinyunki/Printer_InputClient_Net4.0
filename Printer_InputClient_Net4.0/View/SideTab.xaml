@@ -65,7 +65,7 @@
                 Style="{StaticResource Capture_btn}"
                 Command="{Binding BtnCapture}" >
             <Button.Background>
-                <ImageBrush ImageSource="/Assets/img_graph_default.png"/>
+                <ImageBrush ImageSource="/Assets/img_capture_default.png"/>
             </Button.Background>
         </Button>
     </Grid>

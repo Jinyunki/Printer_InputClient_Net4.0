@@ -14,9 +14,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../GuiDesignDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            
-            
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -26,7 +23,7 @@
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="7*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
@@ -35,8 +32,9 @@
                 <view:DataListView/>
             </Grid>
 
+            <view:MPreView/>
             <TextBox Grid.Column="0" Text="{Binding InputPrinterCommand}" Foreground="Black"
-                       TextWrapping="Wrap" FontSize="20"/>
+                       TextWrapping="Wrap" FontSize="20" Visibility="Hidden"/>
 
             <TextBox Text="{Binding PrinterName}" Grid.Column="1" VerticalAlignment="Bottom"
                      TextWrapping="Wrap" />

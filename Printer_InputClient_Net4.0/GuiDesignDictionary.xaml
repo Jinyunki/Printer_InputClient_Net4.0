@@ -20,7 +20,7 @@
     </Style>
 
     <!--/Button_Icon/ ViewCapture Button Style Template //-->
-    <ImageBrush x:Key="Capture_btn_MouseOver" ImageSource="Assets\img_capture_default.png"/>
+    <ImageBrush x:Key="Capture_btn_MouseOver" ImageSource="Assets\img_capture.png"/>
     <Style x:Key="Capture_btn" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>

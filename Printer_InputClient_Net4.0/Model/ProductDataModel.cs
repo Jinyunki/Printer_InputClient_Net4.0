@@ -128,5 +128,15 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
+        private string _barcode ;
+        public string Barcode
+        {
+            get { return _barcode; }
+            set {
+                _barcode = value;
+                RaisePropertyChanged("Barcode");
+            }
+        }
+
     }
 }

@@ -120,6 +120,9 @@
     <Compile Include="View\DataListView.xaml.cs">
       <DependentUpon>DataListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MPreView.xaml.cs">
+      <DependentUpon>MPreView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\PositionDataView.xaml.cs">
       <DependentUpon>PositionDataView.xaml</DependentUpon>
     </Compile>
@@ -143,6 +146,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\DataListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MPreView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -201,10 +208,10 @@
     <Resource Include="Assets\img_today_dataList.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\img_capture.png" />
+    <Resource Include="Assets\img_capture_default.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\img_capture_default.png" />
+    <Resource Include="Assets\img_capture.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
