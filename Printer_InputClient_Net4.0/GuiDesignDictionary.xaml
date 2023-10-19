@@ -189,6 +189,54 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <!--/Button_Icon/ Plus Button Style Template //-->
+    <ImageBrush x:Key="Btn_Plus_MouseOver" ImageSource="Assets\img_plusBtn_event.png"/>
+    <Style x:Key="Plus_btn" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="button"
+                            BorderThickness="0"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="True">
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    TargetName="button"
+                                    Value="{StaticResource Btn_Plus_MouseOver}"/>
+                            <!---->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--/Button_Icon/ Minus Button Style Template //-->
+    <ImageBrush x:Key="Btn_Minus_MouseOver" ImageSource="Assets\img_minus_event.png"/>
+    <Style x:Key="Minus_btn" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="button"
+                            BorderThickness="0"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="True">
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Background"
+                                    TargetName="button"
+                                    Value="{StaticResource Btn_Minus_MouseOver}"/>
+                            <!---->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <!--/Button_Icon/ Statistics_btn Icon Button Style Template //-->
                             <ImageBrush x:Key="Btn_Statistics_MouseOver" ImageSource="Assets\img_graph_event.png"/>
                             <Style x:Key="Statistics_btn" TargetType="{x:Type Button}">

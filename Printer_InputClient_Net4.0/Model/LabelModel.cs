@@ -23,14 +23,15 @@ namespace Printer_InputClient_Net4._0.Model
 
         public List<string> WorkSheetNameList = new List<string>();
 
-        public void UpdateExcelData(string path, string desiredProductName, string desiredValue)
+        public string UpdateExcelData(string path, string desiredProductName, string excelCount, string inputCount)
         {
+            string outputCount = "";
             using (var package = new ExcelPackage(new FileInfo(path)))
             {
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // 시트 선택
                 int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
                 int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
-
+                
 
                 // 원하는 조건에 따라 특정 셀의 값을 업데이트합니다.
                 for (int row = 1; row <= rowCount; row++)
@@ -41,21 +42,25 @@ namespace Printer_InputClient_Net4._0.Model
                         // 날짜가 오늘날짜이면 PrintCount를 증가 시키고,
                         if (worksheet.Cells[row, 10].Value.ToString() == FormatDate)
                         {
-                            worksheet.Cells[row, 12].Value = desiredValue; // PrintCount 값 변경
+                            worksheet.Cells[row, 12].Value = (int.Parse(excelCount) + int.Parse(inputCount)).ToString() ; // PrintCount 값 변경
+                            outputCount = worksheet.Cells[row, 12].Value.ToString();
                         } 
+
                         // 날짜가 프로그램 빌드 실행시 받는 날짜가 달라지면, PrintCount를 0으로 초기화 , 날짜를 오늘날짜로 변경
                         else
                         {
-                            worksheet.Cells[row, 12].Value = "0"; // PrintCount 값 변경
                             worksheet.Cells[row, 10].Value = FormatDate; // PrintCount 값 변경
-                        }
-                        
-                        
+                            worksheet.Cells[row, 12].Value = int.Parse(inputCount).ToString(); // PrintCount 값 변경
+                            outputCount = worksheet.Cells[row, 12].Value.ToString();
+                        }  
                     }
                 }
-
                 package.Save(); // 변경된 내용을 원본 파일에 저장합니다.
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
+
+            return outputCount;
         }
 
         public ObservableCollection<object> GetReadModelRecipe(string path)
@@ -191,6 +196,8 @@ namespace Printer_InputClient_Net4._0.Model
         }
 
         public ICommand BtnPrintCommand { get; set; }
+        public ICommand BtnInkPlusCommand { get; set; }
+        public ICommand BtnInkMinusCommand { get; set; }
         
         
         #endregion
@@ -238,6 +245,16 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
+        private string _inkLevel = "0";
+        public string InkLevel
+        {
+            get { return _inkLevel; }
+            set {
+                _inkLevel = value;
+                RaisePropertyChanged(nameof(InkLevel));
+            }
+        }
+
         public static string FONT_SMALL = "SmallFontSize";
         public static string FONT_MEDIUM = "MediumFontSize";
         public static string FONT_LARGE = "LargeFontSize";
@@ -251,7 +268,7 @@ namespace Printer_InputClient_Net4._0.Model
             StringBuilder builder = new StringBuilder();
 
             builder.Append(tpclCommand._SetLabelSize(keyValuePositionX[labelSize], keyValuePositionY[labelSize], keyValuePositionX[printArea], keyValuePositionY[printArea])); // 라벨사이즈 지정
-            builder.Append(tpclCommand._SetClearImageBuffer()); //클리어
+
             builder.Append(tpclCommand._SetPrintDensity(true, inkDnst, true)); // 인쇄 농도
 
             return builder.ToString();

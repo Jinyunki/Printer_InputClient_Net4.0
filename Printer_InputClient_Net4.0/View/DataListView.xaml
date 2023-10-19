@@ -31,6 +31,8 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Grid.ColumnSpan="3" Background="White" Opacity="0.1"/>
@@ -38,6 +40,7 @@
         <Grid Grid.Row="4" Grid.ColumnSpan="3" Background="White" Opacity="0.1"/>
         <Grid Grid.Row="6" Grid.ColumnSpan="3" Background="White" Opacity="0.1"/>
         <Grid Grid.Row="8" Grid.ColumnSpan="3" Background="White" Opacity="0.1"/>
+        <Grid Grid.Row="10" Grid.ColumnSpan="3" Background="White" Opacity="0.1"/>
 
         <Grid Grid.Column="1" Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -84,12 +87,17 @@
                            HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"/>
 
 
-        <TextBlock Grid.Column="1" Grid.Row="7"
+        <TextBlock Grid.Column="1" Grid.Row="9"
                                    Text="출력 개수" FontSize="15" Foreground="White"
                                    VerticalAlignment="Center" />
 
 
-        <TextBlock Grid.Column="1" Grid.Row="8" Text="출력 버튼"  Foreground="White"
+        <TextBlock Grid.Column="1" Grid.Row="7"
+                                   Text="인쇄 농도" FontSize="15" Foreground="White"
+                                   VerticalAlignment="Center" />
+
+
+        <TextBlock Grid.Column="1" Grid.Row="10" Text="출력 버튼"  Foreground="White"
                            HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"/>
 
 
@@ -138,23 +146,49 @@
                                      FontSize="15" MinWidth="150" Foreground="White"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 
+        <Grid Grid.Column="2" Grid.Row="7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
 
-        <TextBox Grid.Column="2" Grid.Row="7" Text="{Binding PrintCount}" 
+            <TextBlock Grid.Column="1" Text="{Binding InkLevel}" FontSize="25" Foreground="White" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+            <Button Style="{StaticResource Plus_btn}" Grid.Column="2" Margin="5" 
+                    Command="{Binding BtnInkPlusCommand}" Opacity="0.7">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Assets/img_plusBtn_default.png"/>
+                </Button.Background>
+            </Button>
+
+            <Button Style="{StaticResource Minus_btn}" Grid.Column="0" Margin="5" 
+                    Command="{Binding BtnInkMinusCommand}" Opacity="0.7">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Assets/img_minus_default.png"/>
+                </Button.Background>
+            </Button>
+
+
+        </Grid>
+
+        <TextBox Grid.Column="2" Grid.Row="9" Text="{Binding PrintCount}" 
                                      FontSize="15" MinWidth="150" 
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 
         
         
         
-        <Grid Grid.Column="2" Grid.Row="8" >
+        <Grid Grid.Column="2" Grid.Row="10" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button  x:Name="Btn_Print" 
-                         Style="{StaticResource Print_btn}"
-                         Margin="0 15 15 15" 
-                         Command="{Binding BtnPrintCommand}">
+            <Button Style="{StaticResource Print_btn}" Grid.Column="1"
+                    Margin="0 15 15 15" 
+                    Command="{Binding BtnPrintCommand}">
                 <Button.Background>
                     <ImageBrush ImageSource="/Assets/img_printer_white.png"/>
                 </Button.Background>

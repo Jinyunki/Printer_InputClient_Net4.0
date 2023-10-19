@@ -213,5 +213,13 @@
   <ItemGroup>
     <Resource Include="Assets\img_capture.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\img_plusBtn_default.png" />
+    <Resource Include="Assets\img_plusBtn_event.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\img_minus_default.png" />
+    <Resource Include="Assets\img_minus_event.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

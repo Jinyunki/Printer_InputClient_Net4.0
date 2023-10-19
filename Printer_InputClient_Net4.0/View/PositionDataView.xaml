@@ -29,10 +29,15 @@
 
 
             <Grid Grid.Column="1">
-                <view:DataListView/>
+                <view:DataListView Visibility="Visible"/>
             </Grid>
 
-            <view:MPreView/>
+            <Grid  Grid.Column="0">
+                <view:MPreView Visibility="Visible"/>
+            </Grid>
+            
+            
+            
             <TextBox Grid.Column="0" Text="{Binding InputPrinterCommand}" Foreground="Black"
                        TextWrapping="Wrap" FontSize="20" Visibility="Hidden"/>
 
