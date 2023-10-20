@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Ports;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -15,14 +16,33 @@ namespace Printer_InputClient_Net4._0.ViewModel
         public PositionDataViewModel()
         {
             FileName = "DataList.xlsx";
-            
-            TestPrint = new Command(BtnTestCommand); 
+            OpenSerialPort(3, SerialPort_DataReceived);
+            ButtonEvent();
+            PrinterName = "TEC B-SX8T (305 dpi)";
+            //GetModelData("99240-K3100"); // 기본값 TEST
+        }
+        public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            SerialPort sp = (SerialPort)sender;
+            string indata = sp.ReadExisting();
+
+            ProductNumber = indata;
+            GetModelData(ProductNumber);
+
+
+            //string[] indataModel = indata.Split('-');
+            //string resultData = indataModel[0];
+        }
+
+        private void ButtonEvent()
+        {
+            TestPrint = new Command(BtnTestCommand);
+
             BtnPrintCommand = new Command(InputDataSend);
+
             BtnInkPlusCommand = new Command(PlusInkValue);
             BtnInkMinusCommand = new Command(MinusInkValue);
-            PrinterName = "TEC B-SX8T (305 dpi)";
-
-            //GetModelData("99240-K3100"); // 기본값 TEST
         }
 
         private void PlusInkValue(object obj)
@@ -66,7 +86,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
                         Ground = product.Ground;
                         Factory = product.Factory;
                         Company = product.Company;
-                        //PrintCount = product.PrintCount;
+                        ExcelDataCount = product.PrintCount;
                         CommandTPCL(product.Delivery, product.ModelName, product.LotCount, product.ProductNumber, product.ProductName, product.Company, product.Ground, product.Factory, product.SerialNumber, product.PrintCount);
                     } 
                 }
@@ -82,8 +102,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
             {
                 Barcode = serialNumber + GenerateOutput(i+ (int.Parse(printCount)));
 
-                builder.Append(tpclCommand._SetClearImageBuffer()); //클리어
-                builder.Append("\n");
+                builder.Append(tpclCommand._SetClearImageBuffer()+ "\n"); //클리어
 
                 builder.Append(SetPrintDataTrueFont(groupNumber, "납품장소", FONT_SMALL, delivery)); // 납품 장소
                 builder.Append(SetPrintDataTrueFont(++groupNumber, "모델명", FONT_SMALL, modelName)); // ModelName
@@ -121,7 +140,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
             InputPrinterCommand = builder.ToString();
 
-            printCount = UpdateExcelData(FileName, productNumber, int.Parse(PrintCount).ToString() , int.Parse(printCount).ToString());
+            
 
             
 
@@ -166,7 +185,8 @@ namespace Printer_InputClient_Net4._0.ViewModel
         // TPCL TEST TextView 호출 메서드
         private void BtnTestCommand(object obj)
         {
-            GetModelData(ProductNumber);
+            UpdateExcelData(FileName, ProductNumber, int.Parse(PrintCount).ToString(), int.Parse(ExcelDataCount).ToString());
+            //GetModelData(ProductNumber);
         }
         
 

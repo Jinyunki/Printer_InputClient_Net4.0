@@ -2,7 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Ports;
+using System.Reflection;
 using System.Text;
 using System.Windows.Input;
 
@@ -12,9 +15,77 @@ namespace Printer_InputClient_Net4._0.Model
     {
         
         public ICommand TestPrint { get; set; }
+        public ICommand BtnPortConnectCommand { get; set; }
+
+
+        #region Serial I/O
+        public delegate void SerialDataReceivedDelegate(object sender, SerialDataReceivedEventArgs e);
+        private SerialPort serialPort;
+
+        // 포트 연결 상태
+        private string resultConnect = "포트 연결을 눌러 주세요";
+        public string ResultConnect
+        {
+            get { return resultConnect; }
+            set {
+                resultConnect = value;
+                RaisePropertyChanged("ResultConnect");
+            }
+        }
+        /// <summary>
+        /// PortNumber = 연결할 스캐너의 포트번호
+        /// dataReceivedHandler = 기능 바인딩된 핸들러
+        /// </summary>
+        /// <param name="portNumber"></param>
+        /// <param name="dataReceivedHandler"></param>
+        public void OpenSerialPort(int portNumber, SerialDataReceivedDelegate dataReceivedHandler)
+        {
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
+            {
+                if (serialPort != null && serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                    serialPort.Dispose();
+                }
+                serialPort = new SerialPort
+                {
+                    PortName = "COM" + portNumber.ToString(),
+                    BaudRate = 9600,
+                    DataBits = 8,
+                    StopBits = StopBits.One,
+                    Parity = Parity.None
+                };
+
+                serialPort.DataReceived += new SerialDataReceivedEventHandler(dataReceivedHandler);
+
+                serialPort.Open();
+                ResultConnect = "포트 연결";
+            } catch (UnauthorizedAccessException ex)
+            {
+                ResultConnect = "액세스 거부: " + ex.Message;
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                // 포트 액세스 거부 예외 처리
+                // 포트를 닫고 다시 열어보세요.
+                serialPort?.Close();
+                serialPort?.Dispose();
+                OpenSerialPort(portNumber, dataReceivedHandler); // 재귀적으로 메서드 호출
+            } catch (Exception ex)
+            {
+                ResultConnect = "연결 오류: " + ex.Message;
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+            }
+        }
+
+
+        
+
+
+        #endregion
+
 
         #region ExcelReadTest
-        
+
         public ObservableCollection<object> productList = new ObservableCollection<object>();
         public ObservableCollection<object> recipeList = new ObservableCollection<object>();
 
@@ -185,6 +256,15 @@ namespace Printer_InputClient_Net4._0.Model
                 RaisePropertyChanged("FileName");
             }
         }
+        private string _excelDataCount;
+        public string ExcelDataCount
+        {
+            get { return _excelDataCount; }
+            set {
+                _excelDataCount = value;
+                RaisePropertyChanged("ExcelDataCount");
+            }
+        }
         private string _formatDate = $"{DateTime.Now:yy}{(char)('A' + DateTime.Now.Month - 1)}{DateTime.Now:dd}";
         public string FormatDate
         {
@@ -198,13 +278,12 @@ namespace Printer_InputClient_Net4._0.Model
         public ICommand BtnPrintCommand { get; set; }
         public ICommand BtnInkPlusCommand { get; set; }
         public ICommand BtnInkMinusCommand { get; set; }
-        
-        
+
+
         #endregion
 
 
         #region PositionData
-
 
         private string _printerName = string.Empty;
         public string PrinterName

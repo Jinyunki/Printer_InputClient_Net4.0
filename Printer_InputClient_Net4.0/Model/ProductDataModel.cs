@@ -18,7 +18,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _productNumber = "99240-K3100";
+        private string _productNumber = "";
         public string ProductNumber
         {
             get { return _productNumber; }
