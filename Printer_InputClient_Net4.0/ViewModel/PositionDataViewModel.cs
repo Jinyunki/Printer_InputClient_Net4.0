@@ -15,24 +15,29 @@ namespace Printer_InputClient_Net4._0.ViewModel
     {
         public PositionDataViewModel()
         {
-            FileName = "DataList.xlsx";
             OpenSerialPort(3, SerialPort_DataReceived);
             ButtonEvent();
             PrinterName = "TEC B-SX8T (305 dpi)";
-            //GetModelData("99240-K3100"); // 기본값 TEST
         }
+
+        
+
         public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
-            SerialPort sp = (SerialPort)sender;
-            string indata = sp.ReadExisting();
+            try
+            {
+                SerialPort sp = (SerialPort)sender;
+                string indata = sp.ReadExisting();
 
-            ProductNumber = indata;
-            GetModelData(ProductNumber);
+                ProductNumber = indata;
+                GetModelData(ProductNumber);
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
+            }
 
-
-            //string[] indataModel = indata.Split('-');
-            //string resultData = indataModel[0];
         }
 
         private void ButtonEvent()
@@ -43,6 +48,59 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
             BtnInkPlusCommand = new Command(PlusInkValue);
             BtnInkMinusCommand = new Command(MinusInkValue);
+
+            BtnAddSaveCommand = new Command(AddDataSaveCommand);
+            BtnCancelCommand = new Command(AddDataCancelCommand);
+        }
+
+        private void AddDataCancelCommand(object obj)
+        {
+
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
+            {
+
+                ProductNumber = "";
+                ModelName = "";
+                ProductName = "";
+                LotCount = "";
+
+                OpacityValue = 1.0;
+                NoneRecipe = false;
+                ExistRecipe = true;
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
+            }
+
+        }
+
+        private void AddDataSaveCommand(object obj)
+        {
+
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
+            {
+                if (ProductNumber != "")
+                {
+                    UpdateExcelData(FileName, ProductNumber, "", "");
+                }
+
+                ProductNumber = "";
+                ModelName = "";
+                ProductName = "";
+                LotCount = "";
+
+                OpacityValue = 1.0;
+                NoneRecipe = false;
+                ExistRecipe = true;
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
+            }
+
         }
 
         private void PlusInkValue(object obj)
@@ -67,126 +125,123 @@ namespace Printer_InputClient_Net4._0.ViewModel
             InkLevel = minus.ToString();
         }
 
-        public void GetModelData(string inputData)
-        {
-            GetReadModelRecipe(FileName); // 모델 레시피 호출 (File명 + sheetNumber)
-            for (int i = 0; i < productList.Count; i++) // i = CELL 가로 data
-            {
-                if (productList[i] is ProductDataModel product)
-                {
-                    if (inputData == product.ProductNumber) // 읽어온 데이터를 ProductNumber와 비교
-                    {
-                        GetReadLabelRecipe(FileName, product.LabelType);
-                        GetLabelData(); // 라벨 데이터 불러오기
-
-                        ProductNumber = product.ProductNumber;
-                        ModelName = product.ModelName;
-                        ProductName = product.ProductName;
-                        LotCount = product.LotCount;
-                        Ground = product.Ground;
-                        Factory = product.Factory;
-                        Company = product.Company;
-                        ExcelDataCount = product.PrintCount;
-                        CommandTPCL(product.Delivery, product.ModelName, product.LotCount, product.ProductNumber, product.ProductName, product.Company, product.Ground, product.Factory, product.SerialNumber, product.PrintCount);
-                    } 
-                }
-            }
-        }
+        
         public void CommandTPCL(string delivery, string modelName, string lotCount, string productNumber, string productName, string company, string ground, string factory, string serialNumber, string printCount)
         {
-
-            int groupNumber = 1;
-            StringBuilder builder = new StringBuilder();
-            builder.Append(SetSizeAndPrintDensity("라벨", "인쇄 영역", int.Parse(InkLevel)) + "\n"); // 라벨사이즈, 인쇄영역, 잉크 농도
-            for (int i = 1; i <= int.Parse(PrintCount); i++)
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
             {
-                Barcode = serialNumber + GenerateOutput(i+ (int.Parse(printCount)));
-
-                builder.Append(tpclCommand._SetClearImageBuffer()+ "\n"); //클리어
-
-                builder.Append(SetPrintDataTrueFont(groupNumber, "납품장소", FONT_SMALL, delivery)); // 납품 장소
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "모델명", FONT_SMALL, modelName)); // ModelName
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "수량", FONT_MEDIUM, lotCount)); // 수량 pv
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "품번", FONT_MEDIUM, productNumber)); // 품번
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "품명1", FONT_MEDIUM, productName)); // 품명 11
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "품명2", FONT_MEDIUM, productName)); // 품명 22
-                builder.Append(SetBarcode(++groupNumber, "바코드", Barcode)); //barcodeData
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "업체명", FONT_SMALL, company)); // 업체명
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "LotDate", FONT_SMALL, FormatDate)); // LotDate
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "발행 번호", FONT_SMALL, serialNumber)); // 발행번호Text
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "품명3", FONT_LARGE, productName)); // 품명 33
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "지역", FONT_SMALL, ground)); // 지역
-                builder.Append(SetPrintDataTrueFont(++groupNumber, "공장", FONT_SMALL, factory) + "\n"); // 공장
-
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "납품장소", FONT_SMALL, delivery)); // 납품 장소
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "모델명", FONT_SMALL, modelName)); // ModelName
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "수량", FONT_MEDIUM, lotCount)); // 수량 pv
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품번", FONT_MEDIUM, productNumber)); // 품번
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품명1", FONT_MEDIUM, productName)); // 품명 11
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품명2", FONT_MEDIUM, productName)); // 품명 22
-                builder.Append(SetBarcodeBelow(++groupNumber, "바코드", Barcode)); //barcodeData
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "업체명", FONT_SMALL, company)); // 업체명
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "LotDate", FONT_SMALL, FormatDate)); // LotDate
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "발행 번호", FONT_SMALL, serialNumber)); // 발행번호Text
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품명3", FONT_LARGE, productName)); // 품명 33
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "지역", FONT_SMALL, ground)); // 지역
-                builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "공장", FONT_SMALL, factory) + "\n"); // 공장
-
-                groupNumber = 1;
-                
-            }
-
-            builder.Append(tpclCommand._SetStartPrinting(double.Parse(PrintCount), 0, 1, 0, 1, 2, 0, 1));
-
-            InputPrinterCommand = builder.ToString();
-
-            
-
-            
-
-        }
-
-        public void GetLabelData()
-        {
-            keyValuePositionX.Clear();
-            keyValuePositionY.Clear();
-            for (int j = 0; j < recipeList.Count; j++)
-            {
-                if (recipeList[j] is PositionDataModel labelData)
+                int groupNumber = 1;
+                StringBuilder builder = new StringBuilder();
+                builder.Append(SetSizeAndPrintDensity("라벨", "인쇄 영역", int.Parse(InkLevel)) + "\n"); // 라벨사이즈, 인쇄영역, 잉크 농도
+                for (int i = 0; i <= int.Parse(PrintCount); i++)
                 {
-                    string key = labelData.Category;
-                    string valueX = labelData.XPosition;
-                    string valueY = labelData.YPosition;
+                    Barcode = serialNumber + GenerateOutput(i + (int.Parse(printCount)));
 
-                    if (j > 0)
-                    {
-                        keyValuePositionX[key] = double.Parse(valueX);
-                        keyValuePositionY[key] = double.Parse(valueY);
-                    }
+                    builder.Append(tpclCommand._SetClearImageBuffer() + "\n"); //클리어
+
+                    builder.Append(SetPrintDataTrueFont(groupNumber, "납품장소", FONT_SMALL, delivery)); // 납품 장소
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "모델명", FONT_SMALL, modelName)); // ModelName
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "수량", FONT_MEDIUM, lotCount)); // 수량 pv
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "품번", FONT_MEDIUM, productNumber)); // 품번
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "품명1", FONT_MEDIUM, productName)); // 품명 11
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "품명2", FONT_MEDIUM, productName)); // 품명 22
+                    builder.Append(SetBarcode(++groupNumber, "바코드", Barcode)); //barcodeData
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "업체명", FONT_SMALL, company)); // 업체명
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "LotDate", FONT_SMALL, FormatDate)); // LotDate
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "발행 번호", FONT_SMALL, serialNumber)); // 발행번호Text
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "품명3", FONT_LARGE, productName)); // 품명 33
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "지역", FONT_SMALL, ground)); // 지역
+                    builder.Append(SetPrintDataTrueFont(++groupNumber, "공장", FONT_SMALL, factory) + "\n"); // 공장
+
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "납품장소", FONT_SMALL, delivery)); // 납품 장소
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "모델명", FONT_SMALL, modelName)); // ModelName
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "수량", FONT_MEDIUM, lotCount)); // 수량 pv
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품번", FONT_MEDIUM, productNumber)); // 품번
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품명1", FONT_MEDIUM, productName)); // 품명 11
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품명2", FONT_MEDIUM, productName)); // 품명 22
+                    builder.Append(SetBarcodeBelow(++groupNumber, "바코드", Barcode)); //barcodeData
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "업체명", FONT_SMALL, company)); // 업체명
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "LotDate", FONT_SMALL, FormatDate)); // LotDate
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "발행 번호", FONT_SMALL, serialNumber)); // 발행번호Text
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "품명3", FONT_LARGE, productName)); // 품명 33
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "지역", FONT_SMALL, ground)); // 지역
+                    builder.Append(SetPrintDataTrueFontBelow(++groupNumber, "공장", FONT_SMALL, factory) + "\n"); // 공장
+
+                    groupNumber = 1;
+
+                    builder.Append(tpclCommand._SetStartPrinting(1, 0, 1, 0, 1, 2, 0, 1));
                 }
+
+                //builder.Append(tpclCommand._SetStartPrinting(double.Parse(PrintCount), 1, 1, 0, 1, 2, 0, 1));
+
+                InputPrinterCommand = builder.ToString();
+
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
             }
+
         }
 
+       
         // 실제 프린터 출력 메서드
         private void InputDataSend(object obj)
         {
-            PrinterSendTest();
-            GetPrint(PrinterName); // 프린터 시작명령
+            if (ProductNumber == "")
+            {
+                ProductNumber = "99240-K3100";
+                GetModelData(ProductNumber);
+            }
+            if (Today != FormatDate)
+            {
+                ExcelDataCount = "0";
+            }
+            CommandTPCL(Delivery, ModelName, LotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
+            UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());  
+            GetModelData(ProductNumber);
+            GetPrint(PrinterName);
         }
-
-        public void PrinterSendTest()
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(InputDataValue);
-            InputPrinterCommand = builder.ToString();
-        }
-
         
         // TPCL TEST TextView 호출 메서드
         private void BtnTestCommand(object obj)
         {
-            UpdateExcelData(FileName, ProductNumber, int.Parse(PrintCount).ToString(), int.Parse(ExcelDataCount).ToString());
-            //GetModelData(ProductNumber);
+
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
+            {
+                if (ProductNumber == "")
+                {
+                    ProductNumber = "99240-K3100";
+                    GetModelData(ProductNumber);
+                }
+                if (Today != FormatDate)
+                {
+                    ExcelDataCount = "0";
+                }
+
+                if (RemainderLotCount == "0")
+                {
+                    CommandTPCL(Delivery, ModelName, LotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
+                    //Console.WriteLine(InputPrinterCommand);
+                    UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());
+                    GetModelData(ProductNumber);
+                } else
+                {
+                    SerialNumber = double.Parse(RemainderLotCount).ToString("00");
+                    CommandTPCL(Delivery, ModelName, RemainderLotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
+                    UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());
+                    GetModelData(ProductNumber);
+                    Console.WriteLine(InputPrinterCommand);
+                }
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
+            }
+
+            
         }
         
 

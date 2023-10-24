@@ -265,7 +265,7 @@
             </Grid>
 
             <Grid Grid.Column="1" Background="White">
-                <TextBlock Text="{Binding Barcode}" FontSize="25" HorizontalAlignment="Left"
+                <TextBlock Text="{Binding SerialNumber}" FontSize="25" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
             
@@ -284,11 +284,6 @@
 
 
             <Grid Grid.Column="0" Background="White">
-            </Grid>
-
-            <Grid Grid.Column="1" Background="White">
-                <TextBlock Text="{Binding Barcode}" FontSize="25" HorizontalAlignment="Left"
-                           VerticalAlignment="Center"/>
             </Grid>
             
             <Grid Grid.Column="2" Background="White">

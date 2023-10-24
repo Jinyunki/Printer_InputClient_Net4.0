@@ -53,7 +53,8 @@
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left"/>
             <ComboBox Grid.Column="1" ItemsSource="{Binding PortNames}" HorizontalAlignment="Left"
-                          Height="30" SelectedItem="COM3" Width="60" VerticalAlignment="Center">
+                      Foreground="White"
+                      Height="30" SelectedItem="COM3" Width="60" VerticalAlignment="Center">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding}"
@@ -87,13 +88,16 @@
                            HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"/>
 
 
-        <TextBlock Grid.Column="1" Grid.Row="9"
+        <TextBlock Grid.Column="1" Grid.Row="7"
+                                   Text="인쇄 농도" FontSize="15" Foreground="White"
+                                   VerticalAlignment="Center" />
+
+        <TextBlock Grid.Column="1" Grid.Row="8"
                                    Text="출력 개수" FontSize="15" Foreground="White"
                                    VerticalAlignment="Center" />
 
-
-        <TextBlock Grid.Column="1" Grid.Row="7"
-                                   Text="인쇄 농도" FontSize="15" Foreground="White"
+        <TextBlock Grid.Column="1" Grid.Row="9"
+                                   Text="잔량 출력" FontSize="15" Foreground="White"
                                    VerticalAlignment="Center" />
 
 
@@ -120,8 +124,8 @@
             </Button>
 
         </Grid>
-        <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding ProductNumber}" 
-                                     FontSize="15" MinWidth="150"
+        <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding ProductNumber}" 
+                                     FontSize="15" MinWidth="150" Foreground="white"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 
         
@@ -174,7 +178,12 @@
 
         </Grid>
 
-        <TextBox Grid.Column="2" Grid.Row="9" Text="{Binding PrintCount}" 
+        <TextBox Grid.Column="2" Grid.Row="8" Text="{Binding PrintCount}" 
+                                     FontSize="15" MinWidth="150" 
+                                     VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+
+        <TextBox Grid.Column="2" Grid.Row="9" Text="{Binding RemainderLotCount}" 
                                      FontSize="15" MinWidth="150" 
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 

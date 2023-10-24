@@ -1,4 +1,8 @@
-﻿using OfficeOpenXml;
+﻿using ExcelCommand;
+using GalaSoft.MvvmLight;
+using OfficeOpenXml;
+using PrintCommand;
+using Printer_InputClient_Net4._0.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,12 +15,27 @@ using System.Windows.Input;
 
 namespace Printer_InputClient_Net4._0.Model
 {
-    public class LabelModel : MainModel
+    public class LabelModel : ViewModelBase
     {
-        
+        public TPCLCommand tpclCommand = new TPCLCommand();
+        public ReadExcelData readExcelData = new ReadExcelData();
+        public ReadRecive ReadDataRecive = new ReadRecive();
         public ICommand TestPrint { get; set; }
         public ICommand BtnPortConnectCommand { get; set; }
-
+        public ICommand BtnAddSaveCommand { get; set; }
+        public ICommand BtnCancelCommand { get; set; }
+        public ViewModelLocator _locator = new ViewModelLocator();
+        private ViewModelBase _currentViewModel;
+        public ViewModelBase CurrentViewModel
+        {
+            get {
+                return _currentViewModel;
+            }
+            set {
+                _currentViewModel = value;
+                RaisePropertyChanged("CurrentViewModel");
+            }
+        }
 
         #region Serial I/O
         public delegate void SerialDataReceivedDelegate(object sender, SerialDataReceivedEventArgs e);
@@ -77,10 +96,6 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-
-        
-
-
         #endregion
 
 
@@ -93,47 +108,9 @@ namespace Printer_InputClient_Net4._0.Model
         public Dictionary<string, double> keyValuePositionY = new Dictionary<string, double>();
 
         public List<string> WorkSheetNameList = new List<string>();
-
-        public string UpdateExcelData(string path, string desiredProductName, string excelCount, string inputCount)
-        {
-            string outputCount = "";
-            using (var package = new ExcelPackage(new FileInfo(path)))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // 시트 선택
-                int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
-                int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
-                
-
-                // 원하는 조건에 따라 특정 셀의 값을 업데이트합니다.
-                for (int row = 1; row <= rowCount; row++)
-                {
-                    string productNumber = worksheet.Cells[row, 2].Text; // 예를 들어 ProductName을 기준으로 찾는다면 3번째 열에 해당합니다.
-                    if (productNumber == desiredProductName)
-                    {
-                        // 날짜가 오늘날짜이면 PrintCount를 증가 시키고,
-                        if (worksheet.Cells[row, 10].Value.ToString() == FormatDate)
-                        {
-                            worksheet.Cells[row, 12].Value = (int.Parse(excelCount) + int.Parse(inputCount)).ToString() ; // PrintCount 값 변경
-                            outputCount = worksheet.Cells[row, 12].Value.ToString();
-                        } 
-
-                        // 날짜가 프로그램 빌드 실행시 받는 날짜가 달라지면, PrintCount를 0으로 초기화 , 날짜를 오늘날짜로 변경
-                        else
-                        {
-                            worksheet.Cells[row, 10].Value = FormatDate; // PrintCount 값 변경
-                            worksheet.Cells[row, 12].Value = int.Parse(inputCount).ToString(); // PrintCount 값 변경
-                            outputCount = worksheet.Cells[row, 12].Value.ToString();
-                        }  
-                    }
-                }
-                package.Save(); // 변경된 내용을 원본 파일에 저장합니다.
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-            }
-
-            return outputCount;
-        }
-
+        public bool isProductNumberFound = false;
+        
+        
         public ObservableCollection<object> GetReadModelRecipe(string path)
         {
             productList.Clear();
@@ -247,7 +224,7 @@ namespace Printer_InputClient_Net4._0.Model
 
         #region DataList        
 
-        private string _FileName;
+        private string _FileName = "DataList.xlsx";
         public string FileName
         {
             get { return readExcelData.GetRecipeFile(_FileName); }
@@ -256,7 +233,7 @@ namespace Printer_InputClient_Net4._0.Model
                 RaisePropertyChanged("FileName");
             }
         }
-        private string _excelDataCount;
+        private string _excelDataCount = "0";
         public string ExcelDataCount
         {
             get { return _excelDataCount; }
@@ -324,7 +301,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _inkLevel = "0";
+        private string _inkLevel = "3";
         public string InkLevel
         {
             get { return _inkLevel; }

@@ -11,10 +11,24 @@ namespace Printer_InputClient_Net4._0.Model
 {
     public class MainModel : ViewModelBase
     {
-        public TPCLCommand tpclCommand = new TPCLCommand();
-        public ReadExcelData readExcelData = new ReadExcelData();
-        public ReadRecive ReadDataRecive = new ReadRecive();
-        
+        private bool _signalNotRecipe;
+        public bool SignalNotRecipe
+        {
+            get { return _signalNotRecipe; }
+            set {
+                _signalNotRecipe = value;
+                RaisePropertyChanged("SignalNotRecipe");
+            }
+        }
+
+        public ICommand BtnMinmize { get; private set; }
+        public ICommand BtnMaxsize { get; private set; }
+        public ICommand BtnClose { get; private set; }
+        public ICommand BtnCapture { get; set; }
+        public Command btMainHome { get; set; }
+        public Command btExcel { get; set; }
+
+
         #region Window State
         public void WinBtnEvent()
         {
@@ -23,6 +37,12 @@ namespace Printer_InputClient_Net4._0.Model
             BtnClose = new RelayCommand(WindowClose);
             BtnCapture = new Command(ViewCaptureCommand);
             btMainHome = new Command(HomeCommand);
+            btExcel = new Command(ExcelCommand);
+        }
+
+        public void ExcelCommand(object obj)
+        {
+            // 엑셀 버튼 기능 들어갈자리
         }
 
         private void HomeCommand(object obj)
@@ -42,14 +62,17 @@ namespace Printer_InputClient_Net4._0.Model
                 }
             }
         }
-        public ICommand BtnMinmize { get; private set; }
-        public ICommand BtnMaxsize { get; private set; }
-        public ICommand BtnClose { get; private set; }
-        public ICommand BtnCapture { get; set; }
-        public Command btMainHome { get; set; }
+       
 
-        
-
+        private bool _notRecipe = false;
+        public bool NotRecipe
+        {
+            get { return _notRecipe; }
+            set {
+                _notRecipe = value;
+                RaisePropertyChanged("NotRecipe");
+            }
+        }
         private void ViewCaptureCommand(object obj)
         {
             ViewCapture.Capture(obj, "CaptureFile");
@@ -82,8 +105,9 @@ namespace Printer_InputClient_Net4._0.Model
             }
             set {
                 _currentViewModel = value;
-                _currentViewModel.RaisePropertyChanged("CurrentViewModel");
+                RaisePropertyChanged("CurrentViewModel");
             }
         }
+
     }
 }

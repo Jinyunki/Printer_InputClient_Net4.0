@@ -112,11 +112,15 @@
     <Compile Include="Model\MainModel.cs" />
     <Compile Include="Model\PositionDataModel.cs" />
     <Compile Include="Model\ProductDataModel.cs" />
+    <Compile Include="SignalEventArgs .cs" />
     <Compile Include="RawPrinterHelper.cs" />
     <Compile Include="ViewCapture.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PositionDataViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="View\AddRecipeView.xaml.cs">
+      <DependentUpon>AddRecipeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DataListView.xaml.cs">
       <DependentUpon>DataListView.xaml</DependentUpon>
     </Compile>
@@ -145,6 +149,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\AddRecipeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\DataListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -220,6 +228,14 @@
   <ItemGroup>
     <Resource Include="Assets\img_minus_default.png" />
     <Resource Include="Assets\img_minus_event.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\img_save_default.png" />
+    <Resource Include="Assets\img_save_event.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\img_cancel_default.png" />
+    <Resource Include="Assets\img_cancel_event.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -14,6 +14,11 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../GuiDesignDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <!--<DataTemplate DataType="{x:Type vm:PositionDataViewModel}">
+                <view:MPreView/>
+            </DataTemplate>-->
+            
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -27,15 +32,34 @@
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
+            <Grid  Grid.Column="0" Opacity="{Binding OpacityValue}">
+                 <view:MPreView Visibility="Visible"/>
+                <!--<ContentControl Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}"/>-->
+            </Grid>
+
+            <Grid Grid.Column="0" Opacity="0.8" Visibility="{Binding NoneRecipe, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="레시피를 등록 하세요" HorizontalAlignment="Center" VerticalAlignment="Top"
+                           FontSize="100" Foreground="Red"/>
+                
+                <TextBlock Text="No Recipe" HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontSize="150" Foreground="Red"/>
+                <Rectangle>
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="Transparent" Offset="0.0" />
+                            <GradientStop Color="Transparent" Offset="0.47" />
+                            <GradientStop Color="red" Offset="0.5"/>
+                            <GradientStop Color="Transparent" Offset="0.52" />
+                            <GradientStop Color="Transparent" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Grid>
 
             <Grid Grid.Column="1">
-                <view:DataListView Visibility="Visible"/>
+                <view:DataListView Visibility="{Binding ExistRecipe, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <view:AddRecipeView Visibility="{Binding NoneRecipe, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </Grid>
-
-            <Grid  Grid.Column="0">
-                <view:MPreView Visibility="Visible"/>
-            </Grid>
-
 
             <!--<TextBox Grid.Column="0" Text="{Binding InputPrinterCommand}" Foreground="Black"
                        TextWrapping="Wrap" FontSize="20" Visibility="Hidden"/>-->
