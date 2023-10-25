@@ -1,134 +1,172 @@
 ﻿using OfficeOpenXml;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 
 namespace Printer_InputClient_Net4._0.Model
 {
     public class ProductDataModel : LabelModel
     {
+
+        /// <summary>
+        /// 모델 데이터를 읽어오고 해당값을 prop에 Input
+        /// </summary>
+        /// <param name="inputData"></param>
         public void GetModelData(string inputData)
         {
-            bool isRecipe = false; // 입력 값이 productList에 있는지 여부를 나타내는 플래그 변수
 
-            GetReadModelRecipe(FileName); // 모델 레시피 호출 (File명 + sheetNumber)
-            for (int i = 0; i < productList.Count; i++) // i = CELL 가로 data
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
             {
-                if (productList[i] is ProductDataModel product)
+
+                bool isRecipe = false; // 입력 값이 productList에 있는지 여부를 나타내는 플래그 변수
+
+                GetReadModelRecipe(FileName); // 모델 레시피 호출 (File명 + sheetNumber)
+                for (int i = 0; i < productList.Count; i++) // i = CELL 가로 data
                 {
-                    if (inputData == product.ProductNumber) // 읽어온 데이터를 ProductNumber와 비교
+                    if (productList[i] is ProductDataModel product)
                     {
-                        GetReadLabelRecipe(FileName, product.LabelType);
-                        GetLabelData(); // 라벨 데이터 불러오기
+                        if (inputData == product.ProductNumber) // 읽어온 데이터를 ProductNumber와 비교
+                        {
+                            GetReadLabelRecipe(FileName, product.LabelType);
+                            GetLabelData(); // 라벨 데이터 불러오기
 
-                        Delivery = product.Delivery;
-                        ModelName = product.ModelName;
-                        LotCount = product.LotCount;
-                        ProductNumber = product.ProductNumber;
-                        ProductName = product.ProductName;
-                        Company = product.Company;
-                        Ground = product.Ground;
-                        Factory = product.Factory;
-                        SerialNumber = product.LotCount;
-                        Today = product.Today;
-                        ExcelDataCount = product.PrintCount;
+                            Delivery = product.Delivery;
+                            ModelName = product.ModelName;
+                            LotCount = product.LotCount;
+                            ProductNumber = product.ProductNumber;
+                            ProductName = product.ProductName;
+                            Company = product.Company;
+                            Ground = product.Ground;
+                            Factory = product.Factory;
+                            SerialNumber = product.LotCount;
+                            Today = product.Today;
+                            ExcelDataCount = product.PrintCount;
 
-                        isRecipe = true; // productList에 일치하는 항목이 있는 경우 플래그를 true로 설정
-                        SendSignalToMainViewModel(isRecipe);
-                        OpacityValue = 1.0;
-                        NoneRecipe = false;
-                        ExistRecipe = true;
-                        break; // 일치하는 항목을 찾았으므로 루프를 종료합니다.
+                            isRecipe = true; // productList에 일치하는 항목이 있는 경우 플래그를 true로 설정
+                            SendSignalToMainViewModel(isRecipe);
+                            OpacityValue = 1.0;
+                            NoneRecipe = false;
+                            ExistRecipe = true;
+                            break; // 일치하는 항목을 찾았으므로 루프를 종료합니다.
+                        }
                     }
                 }
-            }
 
-            // productList에 일치하는 항목이 없는 경우 메시지 상자를 표시합니다.
-            if (!isRecipe)
+                // productList에 일치하는 항목이 없는 경우 메시지 상자를 표시합니다.
+                if (!isRecipe)
+                {
+                    Delivery = "";
+                    ModelName = "";
+                    LotCount = "";
+                    ProductNumber = inputData;
+                    ProductName = "";
+                    Company = "";
+                    Ground = "";
+                    Factory = "";
+                    SerialNumber = "";
+                    Today = "";
+                    ExcelDataCount = "";
+                    //TossValue = ProductNumber;
+                    isRecipe = false;
+                    SendSignalToMainViewModel(isRecipe);
+
+                    OpacityValue = 0.5;
+                    NoneRecipe = true;
+                    ExistRecipe = false;
+                    //MessageBox.Show("입력한 데이터는 productList에 존재하지 않습니다.");
+                }
+            } catch (Exception ex)
             {
-                Delivery = "";
-                ModelName = "";
-                LotCount = "";
-                ProductNumber = inputData;
-                ProductName = "";
-                Company = "";
-                Ground = "";
-                Factory = "";
-                SerialNumber = "";
-                Today = "";
-                ExcelDataCount = "";
-                //TossValue = ProductNumber;
-                isRecipe = false;
-                SendSignalToMainViewModel(isRecipe);
-
-                OpacityValue = 0.5;
-                NoneRecipe = true;
-                ExistRecipe = false;
-                //MessageBox.Show("입력한 데이터는 productList에 존재하지 않습니다.");
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
             }
+
         }
 
+        /// <summary>
+        /// 엑셀 데이터를 업데이트 합니다. Count등, 없는 모델경우 추가합니다.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="inputProductNumber"></param>
+        /// <param name="excelCount"></param>
+        /// <param name="inputCount"></param>
+        /// <returns></returns>
         public string UpdateExcelData(string path, string inputProductNumber, string excelCount, string inputCount)
         {
-            //string outputCount = "";
-            using (var package = new ExcelPackage(new FileInfo(path)))
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // 시트 선택
-                int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
-                int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
-
-
-                // 원하는 조건에 따라 특정 셀의 값을 업데이트합니다.
-                for (int row = 1; row <= rowCount; row++)
+                //string outputCount = "";
+                using (var package = new ExcelPackage(new FileInfo(path)))
                 {
-                    string productNumber = worksheet.Cells[row, 2].Text; // 예를 들어 ProductName을 기준으로 찾는다면 3번째 열에 해당합니다.
-                    if (productNumber == inputProductNumber)
-                    {
-                        isProductNumberFound = true;
-                        // 날짜가 오늘날짜이면 PrintCount를 증가 시키고,
-                        if (worksheet.Cells[row, 10].Value.ToString() == FormatDate)
-                        {
-                            worksheet.Cells[row, 12].Value = (int.Parse(excelCount) + int.Parse(inputCount)).ToString(); // PrintCount 값 변경
-                            ExcelDataCount = worksheet.Cells[row, 12].Value.ToString();
-                        }
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // 시트 선택
+                    int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
+                    int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
 
-                        // 날짜가 프로그램 빌드 실행시 받는 날짜가 달라지면, PrintCount를 0으로 초기화 , 날짜를 오늘날짜로 변경
-                        else
+
+                    // 원하는 조건에 따라 특정 셀의 값을 업데이트합니다.
+                    for (int row = 1; row <= rowCount; row++)
+                    {
+                        string productNumber = worksheet.Cells[row, 2].Text; // 예를 들어 ProductName을 기준으로 찾는다면 3번째 열에 해당합니다.
+                        if (productNumber == inputProductNumber)
                         {
-                            worksheet.Cells[row, 10].Value = FormatDate; // FormatDate 값 변경
-                            worksheet.Cells[row, 12].Value = int.Parse(inputCount).ToString(); // PrintCount 값 변경
-                            ExcelDataCount = worksheet.Cells[row, 12].Value.ToString();
+                            isProductNumberFound = true;
+                            // 날짜가 오늘날짜이면 PrintCount를 증가 시키고,
+                            if (worksheet.Cells[row, 10].Value.ToString() == FormatDate)
+                            {
+                                worksheet.Cells[row, 12].Value = (int.Parse(excelCount) + int.Parse(inputCount)).ToString(); // PrintCount 값 변경
+                                ExcelDataCount = worksheet.Cells[row, 12].Value.ToString();
+                            }
+
+                            // 날짜가 프로그램 빌드 실행시 받는 날짜가 달라지면, PrintCount를 0으로 초기화 , 날짜를 오늘날짜로 변경
+                            else
+                            {
+                                worksheet.Cells[row, 10].Value = FormatDate; // FormatDate 값 변경
+                                worksheet.Cells[row, 12].Value = int.Parse(inputCount).ToString(); // PrintCount 값 변경
+                                ExcelDataCount = worksheet.Cells[row, 12].Value.ToString();
+                            }
                         }
                     }
-                }
 
-                if (!isProductNumberFound)
-                {
-                    // 마지막 행의 다음 행에 데이터를 추가합니다.
-                    int newRow = rowCount + 1;
-                    worksheet.Cells[rowCount + 1, 1].Value = ModelName; // 모델명
-                    worksheet.Cells[rowCount + 1, 2].Value = ProductNumber; // 품번
-                    worksheet.Cells[rowCount + 1, 3].Value = ProductName; // 품명
-                    worksheet.Cells[rowCount + 1, 4].Value = LotCount; // 수량
-                    worksheet.Cells[rowCount + 1, 5].Value = "KOREA"; // 지역
-                    worksheet.Cells[rowCount + 1, 6].Value = "R7A8"; // 납품장소
-                    worksheet.Cells[rowCount + 1, 7].Value = "HyundaiMobis Co.,Ltd"; // 업체명
-                    worksheet.Cells[rowCount + 1, 8].Value = "Sekonix"; // 공장
-                    worksheet.Cells[rowCount + 1, 9].Value = "M"; // 라벨타입
-                    worksheet.Cells[rowCount + 1, 10].Value = "0"; // Today
-                    worksheet.Cells[rowCount + 1, 11].Value = "0"; // S/N = 0
-                    worksheet.Cells[rowCount + 1, 12].Value = "0"; // Count
-                }
+                    // 레시피에 해당 모델이 존재하지 않을때
+                    if (!isProductNumberFound)
+                    {
+                        // 마지막 행의 다음 행에 데이터를 추가합니다.
+                        int newRow = rowCount + 1;
+                        worksheet.Cells[rowCount + 1, 1].Value = ModelName; // 모델명
+                        worksheet.Cells[rowCount + 1, 2].Value = ProductNumber; // 품번
+                        worksheet.Cells[rowCount + 1, 3].Value = ProductName; // 품명
+                        worksheet.Cells[rowCount + 1, 4].Value = LotCount; // 수량
+                        worksheet.Cells[rowCount + 1, 5].Value = worksheet.Cells[rowCount, 5].Value; // 지역
+                        worksheet.Cells[rowCount + 1, 6].Value = worksheet.Cells[rowCount, 6].Value; // 납품장소
+                        worksheet.Cells[rowCount + 1, 7].Value = worksheet.Cells[rowCount, 7].Value; // 업체명
+                        worksheet.Cells[rowCount + 1, 8].Value = worksheet.Cells[rowCount, 8].Value; // 공장
+                        worksheet.Cells[rowCount + 1, 9].Value = worksheet.Cells[rowCount, 9].Value; // 라벨타입
+                        worksheet.Cells[rowCount + 1, 10].Value = "0"; // Today
+                        worksheet.Cells[rowCount + 1, 11].Value = "0"; // S/N = 0
+                        worksheet.Cells[rowCount + 1, 12].Value = "0"; // Count
+                    }
 
-                package.Save(); // 변경된 내용을 원본 파일에 저장합니다.
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                    package.Save(); // 변경된 내용을 원본 파일에 저장합니다.
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
+                return ExcelDataCount;
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
             }
-            return ExcelDataCount;
+
         }
 
 
         #region Signal Item
-
+        /// <summary>
+        /// 서로다른 깊이에서 데이터 전달을 하기위한 이벤트 핸들러
+        /// </summary>
         public static event EventHandler<SignalEventArgs> SignalFromSecondViewModelChanged;
 
         private void SendSignalToMainViewModel(bool signal)

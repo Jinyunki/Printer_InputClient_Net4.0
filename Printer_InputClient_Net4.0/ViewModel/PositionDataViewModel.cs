@@ -42,15 +42,25 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
         private void ButtonEvent()
         {
-            TestPrint = new Command(BtnTestCommand);
 
-            BtnPrintCommand = new Command(InputDataSend);
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
+            {
+                TestPrint = new Command(BtnTestCommand);
 
-            BtnInkPlusCommand = new Command(PlusInkValue);
-            BtnInkMinusCommand = new Command(MinusInkValue);
+                BtnPrintCommand = new Command(InputDataSend);
 
-            BtnAddSaveCommand = new Command(AddDataSaveCommand);
-            BtnCancelCommand = new Command(AddDataCancelCommand);
+                BtnInkPlusCommand = new Command(PlusInkValue);
+                BtnInkMinusCommand = new Command(MinusInkValue);
+
+                BtnAddSaveCommand = new Command(AddDataSaveCommand);
+                BtnCancelCommand = new Command(AddDataCancelCommand);
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
+            }
+
         }
 
         private void AddDataCancelCommand(object obj)
@@ -111,18 +121,34 @@ namespace Printer_InputClient_Net4._0.ViewModel
             {
                 return;
             }
-            InkLevel = plus.ToString();
+
+            if (plus >= 0)
+            {
+                InkLevel = "+" + plus.ToString("00");
+            } else
+            {
+                InkLevel = plus.ToString("00");
+            }
+            
         }
 
         private void MinusInkValue(object obj)
         {
             int minus = int.Parse(InkLevel);
             --minus;
-            if (minus < 0)
+            if (minus < -10)
             {
                 return;
             }
-            InkLevel = minus.ToString();
+
+            if (minus < 0)
+            {
+                InkLevel = minus.ToString("00");
+            } else
+            {
+                InkLevel = "+" + minus.ToString("00");
+            }
+            
         }
 
         
@@ -133,10 +159,18 @@ namespace Printer_InputClient_Net4._0.ViewModel
             {
                 int groupNumber = 1;
                 StringBuilder builder = new StringBuilder();
-                builder.Append(SetSizeAndPrintDensity("라벨", "인쇄 영역", int.Parse(InkLevel)) + "\n"); // 라벨사이즈, 인쇄영역, 잉크 농도
-                for (int i = 0; i <= int.Parse(PrintCount); i++)
+                builder.Append(SetSizeAndPrintDensity("라벨", "인쇄 영역" )+ "\n"); // 라벨사이즈, 인쇄영역, 잉크 농도
+                builder.Append(tpclCommand._SetPrintDensity(InkLevel, true)); // 인쇄 농도
+                if (printCount == "0")
                 {
-                    Barcode = serialNumber + GenerateOutput(i + (int.Parse(printCount)));
+                    printCount = "1";
+                    
+                }
+
+                for (int i = 1; i <= int.Parse(PrintCount); i++)
+                {
+
+                    Barcode = serialNumber + GenerateOutput(i - 1 + (int.Parse(printCount)));
 
                     builder.Append(tpclCommand._SetClearImageBuffer() + "\n"); //클리어
 
@@ -170,12 +204,13 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
                     groupNumber = 1;
 
-                    builder.Append(tpclCommand._SetStartPrinting(1, 0, 1, 0, 1, 2, 0, 1));
+                    builder.Append(tpclCommand._SetStartPrinting(1, 0, 1, 1, 1, 2, 0, 1));
                 }
 
                 //builder.Append(tpclCommand._SetStartPrinting(double.Parse(PrintCount), 1, 1, 0, 1, 2, 0, 1));
 
                 InputPrinterCommand = builder.ToString();
+                Console.WriteLine(InputPrinterCommand);
 
             } catch (Exception ex)
             {
@@ -189,25 +224,6 @@ namespace Printer_InputClient_Net4._0.ViewModel
         // 실제 프린터 출력 메서드
         private void InputDataSend(object obj)
         {
-            if (ProductNumber == "")
-            {
-                ProductNumber = "99240-K3100";
-                GetModelData(ProductNumber);
-            }
-            if (Today != FormatDate)
-            {
-                ExcelDataCount = "0";
-            }
-            CommandTPCL(Delivery, ModelName, LotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
-            UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());  
-            GetModelData(ProductNumber);
-            GetPrint(PrinterName);
-        }
-        
-        // TPCL TEST TextView 호출 메서드
-        private void BtnTestCommand(object obj)
-        {
-
             Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
             try
             {
@@ -223,16 +239,64 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
                 if (RemainderLotCount == "0")
                 {
-                    CommandTPCL(Delivery, ModelName, LotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
-                    //Console.WriteLine(InputPrinterCommand);
                     UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());
+                    CommandTPCL(Delivery, ModelName, LotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
                     GetModelData(ProductNumber);
+
+                    GetPrint(PrinterName);
+                    //Console.WriteLine(InputPrinterCommand);
                 } else
                 {
                     SerialNumber = double.Parse(RemainderLotCount).ToString("00");
-                    CommandTPCL(Delivery, ModelName, RemainderLotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
+                    PrintCount = "1";
                     UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());
+                    CommandTPCL(Delivery, ModelName, RemainderLotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
                     GetModelData(ProductNumber);
+
+                    GetPrint(PrinterName);
+                    //Console.WriteLine(InputPrinterCommand);
+                }
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
+            }
+
+        }
+
+        // TPCL TEST TextView 호출 메서드
+        private void BtnTestCommand(object obj)
+        {
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
+            {
+                if (ProductNumber == "")
+                {
+                    ProductNumber = "99240-K3100";
+                    GetModelData(ProductNumber);
+                }
+                if (Today != FormatDate)
+                {
+                    ExcelDataCount = "0";
+                }
+
+                if (RemainderLotCount == "0")
+                {
+                    UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());
+                    CommandTPCL(Delivery, ModelName, LotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
+                    GetModelData(ProductNumber);
+
+                    //GetPrint(PrinterName);
+                    Console.WriteLine(InputPrinterCommand);
+                } else
+                {
+                    SerialNumber = double.Parse(RemainderLotCount).ToString("00");
+                    PrintCount = "1";
+                    UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());
+                    CommandTPCL(Delivery, ModelName, RemainderLotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
+                    GetModelData(ProductNumber);
+
+                    //GetPrint(PrinterName);
                     Console.WriteLine(InputPrinterCommand);
                 }
             } catch (Exception ex)
@@ -241,9 +305,9 @@ namespace Printer_InputClient_Net4._0.ViewModel
                 throw;
             }
 
-            
+
         }
-        
+
 
         private void GetPrint(string printerName)
         {

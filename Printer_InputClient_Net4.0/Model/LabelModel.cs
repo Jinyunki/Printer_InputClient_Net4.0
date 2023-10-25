@@ -111,113 +111,145 @@ namespace Printer_InputClient_Net4._0.Model
         public bool isProductNumberFound = false;
         
         
+        /// <summary>
+        /// 모델 데이터를 읽어옵니다
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public ObservableCollection<object> GetReadModelRecipe(string path)
         {
-            productList.Clear();
-            string wrokSheetName;
-            using (var package = new ExcelPackage(new FileInfo(path)))
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // 시트 선택
 
-                ExcelWorksheets excelWorksheets = package.Workbook.Worksheets;
-                WorkSheetNameList.Clear();
-                for (int i = 0; i < excelWorksheets.Count; i++)
+                productList.Clear();
+                string wrokSheetName;
+                using (var package = new ExcelPackage(new FileInfo(path)))
                 {
-                    WorkSheetNameList.Add(excelWorksheets[i].Name);
-                }
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // 시트 선택
 
-                wrokSheetName = worksheet.Name;
-                int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
-                int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
-
-                for (int row = 1; row <= rowCount; row++)
-                {
-                    ObservableCollection<string> columnData = new ObservableCollection<string>();
-                    for (int col = 1; col <= colCount; col++) // 열 제목도 데이터로 포함시키기 위해 1부터 시작
+                    ExcelWorksheets excelWorksheets = package.Workbook.Worksheets;
+                    WorkSheetNameList.Clear();
+                    for (int i = 0; i < excelWorksheets.Count; i++)
                     {
-                        string cellValue = worksheet.Cells[row, col].Text;
-                        columnData.Add(cellValue);
+                        WorkSheetNameList.Add(excelWorksheets[i].Name);
                     }
 
-                    productList.Add(new ProductDataModel
+                    wrokSheetName = worksheet.Name;
+                    int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
+                    int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
+
+                    for (int row = 1; row <= rowCount; row++)
                     {
-                        ModelName = columnData[0],
-                        ProductNumber = columnData[1],
-                        ProductName = columnData[2],
-                        LotCount = columnData[3],
-                        Ground = columnData[4],
-                        Delivery = columnData[5],
-                        Company = columnData[6],
-                        Factory = columnData[7],
-                        LabelType = columnData[8],
-                        Today = columnData[9],
-                        SerialNumber = columnData[10],
-                        PrintCount = columnData[11]
-                    });
+                        ObservableCollection<string> columnData = new ObservableCollection<string>();
+                        for (int col = 1; col <= colCount; col++) // 열 제목도 데이터로 포함시키기 위해 1부터 시작
+                        {
+                            string cellValue = worksheet.Cells[row, col].Text;
+                            columnData.Add(cellValue);
+                        }
+
+                        productList.Add(new ProductDataModel
+                        {
+                            ModelName = columnData[0],
+                            ProductNumber = columnData[1],
+                            ProductName = columnData[2],
+                            LotCount = columnData[3],
+                            Ground = columnData[4],
+                            Delivery = columnData[5],
+                            Company = columnData[6],
+                            Factory = columnData[7],
+                            LabelType = columnData[8],
+                            Today = columnData[9],
+                            SerialNumber = columnData[10],
+                            PrintCount = columnData[11]
+                        });
+                    }
+                    package.Dispose();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
-                package.Dispose();
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                return productList;
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
             }
-            return productList;
+
         }
 
+        /// <summary>
+        /// 레시피 데이터를 읽어옵니다
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="labelType"></param>
+        /// <returns></returns>
         public ObservableCollection<object> GetReadLabelRecipe(string path,string labelType)
         {
-            int intLabelType = 0;
-            recipeList.Clear();
-            switch (labelType)
-            {
-                case "S":
-                    intLabelType = 1;
-                    break;
-                case "M":
-                    intLabelType = 2;
-                    break;
-                case "L":
-                    intLabelType = 3;
-                    break;
-                default:
-                    Console.WriteLine("레시피의 라벨 데이터를 확인하세요");
-                    break;
-            }
-            string wrokSheetName;
-            using (var package = new ExcelPackage(new FileInfo(path)))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[intLabelType]; // 시트 선택
 
-                ExcelWorksheets excelWorksheets = package.Workbook.Worksheets;
-                WorkSheetNameList.Clear();
-                for (int i = 0; i < excelWorksheets.Count; i++)
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
+            {
+
+                int intLabelType = 0;
+                recipeList.Clear();
+                switch (labelType)
                 {
-                    WorkSheetNameList.Add(excelWorksheets[i].Name);
+                    case "S":
+                        intLabelType = 1;
+                        break;
+                    case "M":
+                        intLabelType = 2;
+                        break;
+                    case "L":
+                        intLabelType = 3;
+                        break;
+                    default:
+                        Console.WriteLine("레시피의 라벨 데이터를 확인하세요");
+                        break;
                 }
-
-                wrokSheetName = worksheet.Name;
-                int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
-                int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
-
-                for (int row = 1; row <= rowCount; row++)
+                string wrokSheetName;
+                using (var package = new ExcelPackage(new FileInfo(path)))
                 {
-                    ObservableCollection<string> columnData = new ObservableCollection<string>();
-                    for (int col = 1; col <= colCount; col++) // 열 제목도 데이터로 포함시키기 위해 1부터 시작
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[intLabelType]; // 시트 선택
+
+                    ExcelWorksheets excelWorksheets = package.Workbook.Worksheets;
+                    WorkSheetNameList.Clear();
+                    for (int i = 0; i < excelWorksheets.Count; i++)
                     {
-                        string cellValue = worksheet.Cells[row, col].Text;
-                        columnData.Add(cellValue);
+                        WorkSheetNameList.Add(excelWorksheets[i].Name);
                     }
 
-                    recipeList.Add(new PositionDataModel
+                    wrokSheetName = worksheet.Name;
+                    int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
+                    int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
+
+                    for (int row = 1; row <= rowCount; row++)
                     {
-                        Category = columnData[0],
-                        XPosition = columnData[1],
-                        YPosition = columnData[2]
-                    });
+                        ObservableCollection<string> columnData = new ObservableCollection<string>();
+                        for (int col = 1; col <= colCount; col++) // 열 제목도 데이터로 포함시키기 위해 1부터 시작
+                        {
+                            string cellValue = worksheet.Cells[row, col].Text;
+                            columnData.Add(cellValue);
+                        }
+
+                        recipeList.Add(new PositionDataModel
+                        {
+                            Category = columnData[0],
+                            XPosition = columnData[1],
+                            YPosition = columnData[2]
+                        });
+                    }
+                    package.Dispose();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
-                package.Dispose();
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                return recipeList;
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
             }
-            return recipeList;
+
         }
 
         #endregion
@@ -301,7 +333,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _inkLevel = "3";
+        private string _inkLevel = "+00";
         public string InkLevel
         {
             get { return _inkLevel; }
@@ -319,13 +351,11 @@ namespace Printer_InputClient_Net4._0.Model
 
         #region defaultListUpdate
 
-        public string SetSizeAndPrintDensity(string labelSize, string printArea, int inkDnst)
+        public string SetSizeAndPrintDensity(string labelSize, string printArea)
         {
             StringBuilder builder = new StringBuilder();
 
             builder.Append(tpclCommand._SetLabelSize(keyValuePositionX[labelSize], keyValuePositionY[labelSize], keyValuePositionX[printArea], keyValuePositionY[printArea])); // 라벨사이즈 지정
-
-            builder.Append(tpclCommand._SetPrintDensity(true, inkDnst, true)); // 인쇄 농도
 
             return builder.ToString();
         }
@@ -368,47 +398,57 @@ namespace Printer_InputClient_Net4._0.Model
             return builder.ToString();
         }
 
+
         public string ConvertOutput(int printCount)
         {
-            string output;
-            if (printCount > 0 && printCount <= 10) // 1~10
+            Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
+            try
             {
-                output = $"{printCount-1}";
-            } 
-            else // 11 이상
-            {
-                if (printCount < 37) // 11~36
+
+                string output;
+                if (printCount > 0 && printCount <= 10) // 1~10
                 {
-                    char customChar = (char)('A' + (printCount - 11));
-                    output = $"{customChar}";
-                } 
-                else // 37 이상
+                    output = $"{printCount - 1}";
+                } else // 11 이상
                 {
-                    int remainder = printCount % 36;
-                    if (remainder > 0 && remainder <= 10)
+                    if (printCount < 37) // 11~36
                     {
-                        output = $"{remainder-1}";
-                    }
-                    
-                    else
+                        char customChar = (char)('A' + (printCount - 11));
+                        output = $"{customChar}";
+                    } else // 37 이상
                     {
-                        char remainderChar;
-                        if (remainder == 0)
+                        int remainder = printCount % 36;
+                        if (remainder > 0 && remainder <= 10)
                         {
-                            remainderChar = 'Z';
-                        }
-                        
-                        else
+                            output = $"{remainder - 1}";
+                        } else
                         {
-                            remainderChar = (char)('A' + remainder - 11);
+                            char remainderChar;
+                            if (remainder == 0)
+                            {
+                                remainderChar = 'Z';
+                            } else
+                            {
+                                remainderChar = (char)('A' + remainder - 11);
+                            }
+                            output = $"{remainderChar}";
                         }
-                        output = $"{remainderChar}";
                     }
                 }
+
+                return output;
+            } catch (Exception ex)
+            {
+                Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
+                throw;
             }
 
-            return output;
         }
+        /// <summary>
+        /// 36진법 반환 메서드
+        /// </summary>
+        /// <param name="printCount"></param>
+        /// <returns></returns>
         public string GenerateOutput(int printCount)
         {
             string returnValue = "범위 초과";
