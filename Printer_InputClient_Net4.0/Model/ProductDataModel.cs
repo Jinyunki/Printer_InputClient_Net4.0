@@ -1,8 +1,13 @@
-﻿using OfficeOpenXml;
+﻿using Microsoft.Win32;
+using OfficeOpenXml;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Ports;
 using System.Reflection;
+using System.Security;
+using System.Security.Permissions;
 
 namespace Printer_InputClient_Net4._0.Model
 {
@@ -61,6 +66,7 @@ namespace Printer_InputClient_Net4._0.Model
                     ModelName = "";
                     LotCount = "";
                     ProductNumber = inputData;
+                    AddProductNumber = inputData;
                     ProductName = "";
                     Company = "";
                     Ground = "";
@@ -135,18 +141,18 @@ namespace Printer_InputClient_Net4._0.Model
                     {
                         // 마지막 행의 다음 행에 데이터를 추가합니다.
                         int newRow = rowCount + 1;
-                        worksheet.Cells[rowCount + 1, 1].Value = ModelName; // 모델명
-                        worksheet.Cells[rowCount + 1, 2].Value = ProductNumber; // 품번
-                        worksheet.Cells[rowCount + 1, 3].Value = ProductName; // 품명
-                        worksheet.Cells[rowCount + 1, 4].Value = LotCount; // 수량
-                        worksheet.Cells[rowCount + 1, 5].Value = worksheet.Cells[rowCount, 5].Value; // 지역
-                        worksheet.Cells[rowCount + 1, 6].Value = worksheet.Cells[rowCount, 6].Value; // 납품장소
-                        worksheet.Cells[rowCount + 1, 7].Value = worksheet.Cells[rowCount, 7].Value; // 업체명
-                        worksheet.Cells[rowCount + 1, 8].Value = worksheet.Cells[rowCount, 8].Value; // 공장
-                        worksheet.Cells[rowCount + 1, 9].Value = worksheet.Cells[rowCount, 9].Value; // 라벨타입
-                        worksheet.Cells[rowCount + 1, 10].Value = "0"; // Today
-                        worksheet.Cells[rowCount + 1, 11].Value = "0"; // S/N = 0
-                        worksheet.Cells[rowCount + 1, 12].Value = "0"; // Count
+                        worksheet.Cells[newRow, 1].Value = ModelName; // 모델명
+                        worksheet.Cells[newRow, 2].Value = ProductNumber; // 품번
+                        worksheet.Cells[newRow, 3].Value = ProductName; // 품명
+                        worksheet.Cells[newRow, 4].Value = LotCount; // 수량
+                        worksheet.Cells[newRow, 5].Value = worksheet.Cells[rowCount, 5].Value; // 지역
+                        worksheet.Cells[newRow, 6].Value = worksheet.Cells[rowCount, 6].Value; // 납품장소
+                        worksheet.Cells[newRow, 7].Value = worksheet.Cells[rowCount, 7].Value; // 업체명
+                        worksheet.Cells[newRow, 8].Value = worksheet.Cells[rowCount, 8].Value; // 공장
+                        worksheet.Cells[newRow, 9].Value = worksheet.Cells[rowCount, 9].Value; // 라벨타입
+                        worksheet.Cells[newRow, 10].Value = "0"; // Today
+                        worksheet.Cells[newRow, 11].Value = "0"; // S/N = 0
+                        worksheet.Cells[newRow, 12].Value = "0"; // Count
                     }
 
                     package.Save(); // 변경된 내용을 원본 파일에 저장합니다.
@@ -206,6 +212,26 @@ namespace Printer_InputClient_Net4._0.Model
         }
 
         #region ModelDataList
+        public string[] _portNames = SerialPort.GetPortNames();
+        public string[] PortNames
+        {
+            get { return _portNames; }
+            set {
+                _portNames = value;
+                RaisePropertyChanged("PortNames");
+            }
+        }
+
+        private string _selectedPort = "COM3";
+        public string SelectedPort
+        {
+            get { return _selectedPort; }
+            set {
+                _selectedPort = value;
+                RaisePropertyChanged("SelectedPort");
+            }
+        }
+
 
         private string _modelName;
         public string ModelName
@@ -221,11 +247,6 @@ namespace Printer_InputClient_Net4._0.Model
         {
             get { return _productNumber; }
             set {
-                // 문자열의 길이가 10 이상인지 확인하고, 10 이상이면 11번째 이후의 문자를 제거합니다.
-                if (value.Length > 11)
-                {
-                    value = value.Substring(0, 10);
-                }
 
                 // 문자열에 "-"가 포함되어 있는지 확인합니다.
                 if (value.Contains("-"))
@@ -244,10 +265,27 @@ namespace Printer_InputClient_Net4._0.Model
                     }
                 }
 
+
+                // 문자열의 길이가 10 이상인지 확인하고, 10 이상이면 11번째 이후의 문자를 제거합니다.
+                if (value.Length > 10)
+                {
+                    _productNumber = value.Substring(0, 11);
+                }
+
+
                 RaisePropertyChanged("ProductNumber");
             }
         }
-
+        private string _addProductNumber;
+        public string AddProductNumber
+        {
+            get { return _addProductNumber; }
+            set {
+                _addProductNumber = value;
+                RaisePropertyChanged("AddProductNumber");
+            }
+        }
+        
 
         private string _productName;
         public string ProductName

@@ -24,6 +24,7 @@ namespace Printer_InputClient_Net4._0.Model
         public ICommand BtnPortConnectCommand { get; set; }
         public ICommand BtnAddSaveCommand { get; set; }
         public ICommand BtnCancelCommand { get; set; }
+        public ICommand EnterCommand { get; set; }
         public ViewModelLocator _locator = new ViewModelLocator();
         private ViewModelBase _currentViewModel;
         public ViewModelBase CurrentViewModel
@@ -40,6 +41,7 @@ namespace Printer_InputClient_Net4._0.Model
         #region Serial I/O
         public delegate void SerialDataReceivedDelegate(object sender, SerialDataReceivedEventArgs e);
         private SerialPort serialPort;
+        
 
         // 포트 연결 상태
         private string resultConnect = "포트 연결을 눌러 주세요";
@@ -57,7 +59,7 @@ namespace Printer_InputClient_Net4._0.Model
         /// </summary>
         /// <param name="portNumber"></param>
         /// <param name="dataReceivedHandler"></param>
-        public void OpenSerialPort(int portNumber, SerialDataReceivedDelegate dataReceivedHandler)
+        public void OpenSerialPort(string portNumber, SerialDataReceivedDelegate dataReceivedHandler)
         {
             Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
             try
@@ -69,7 +71,7 @@ namespace Printer_InputClient_Net4._0.Model
                 }
                 serialPort = new SerialPort
                 {
-                    PortName = "COM" + portNumber.ToString(),
+                    PortName = portNumber,
                     BaudRate = 9600,
                     DataBits = 8,
                     StopBits = StopBits.One,
@@ -79,7 +81,7 @@ namespace Printer_InputClient_Net4._0.Model
                 serialPort.DataReceived += new SerialDataReceivedEventHandler(dataReceivedHandler);
 
                 serialPort.Open();
-                ResultConnect = "포트 연결";
+                ResultConnect = "PORT ON";
             } catch (UnauthorizedAccessException ex)
             {
                 ResultConnect = "액세스 거부: " + ex.Message;
@@ -88,13 +90,15 @@ namespace Printer_InputClient_Net4._0.Model
                 // 포트를 닫고 다시 열어보세요.
                 serialPort?.Close();
                 serialPort?.Dispose();
-                OpenSerialPort(portNumber, dataReceivedHandler); // 재귀적으로 메서드 호출
+                //OpenSerialPort(portNumber, dataReceivedHandler); // 재귀적으로 메서드 호출
             } catch (Exception ex)
             {
                 ResultConnect = "연결 오류: " + ex.Message;
                 Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
             }
         }
+
+
 
         #endregion
 
@@ -121,7 +125,6 @@ namespace Printer_InputClient_Net4._0.Model
             Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
             try
             {
-
                 productList.Clear();
                 string wrokSheetName;
                 using (var package = new ExcelPackage(new FileInfo(path)))
@@ -134,7 +137,6 @@ namespace Printer_InputClient_Net4._0.Model
                     {
                         WorkSheetNameList.Add(excelWorksheets[i].Name);
                     }
-
                     wrokSheetName = worksheet.Name;
                     int colCount = worksheet.Dimension.Columns; // 가로줄의 개수
                     int rowCount = worksheet.Dimension.Rows; // 세로줄의 개수
@@ -254,7 +256,26 @@ namespace Printer_InputClient_Net4._0.Model
 
         #endregion
 
-        #region DataList        
+        #region DataList  
+        private string _preViewFontSize = "20";
+        public string PreViewFontSize
+        {
+            get { return _preViewFontSize; }
+            set {
+                _preViewFontSize = value;
+                RaisePropertyChanged("PreViewFontSize");
+            }
+        }
+
+        private string _dataListViewFontSize = "12";
+        public string DataListViewFontSize
+        {
+            get { return _dataListViewFontSize; }
+            set {
+                _dataListViewFontSize = value;
+                RaisePropertyChanged("DataListViewFontSize");
+            }
+        }
 
         private string _FileName = "DataList.xlsx";
         public string FileName
@@ -287,6 +308,7 @@ namespace Printer_InputClient_Net4._0.Model
         public ICommand BtnPrintCommand { get; set; }
         public ICommand BtnInkPlusCommand { get; set; }
         public ICommand BtnInkMinusCommand { get; set; }
+        public ICommand BtnInkReturnCommand { get; set; }
 
 
         #endregion
@@ -333,7 +355,7 @@ namespace Printer_InputClient_Net4._0.Model
             }
         }
 
-        private string _inkLevel = "+00";
+        private string _inkLevel = "+02";
         public string InkLevel
         {
             get { return _inkLevel; }

@@ -42,44 +42,44 @@
 
         <Grid Grid.ColumnSpan="3" Grid.Row="0">
             <TextBlock Text="레시피를 등록 하세요" HorizontalAlignment="Center" VerticalAlignment="Center"
-                       FontSize="30" Foreground="White"/>
+                       FontSize="25" Foreground="White"/>
         </Grid>
 
         <TextBlock Grid.Column="1" Grid.Row="1"  Foreground="White"
-                                   Text="Product Number( 품 번 )" FontSize="15" 
+                                   Text="품 번" FontSize="{Binding DataListViewFontSize}" 
                                    VerticalAlignment="Center" />
 
         <TextBlock Grid.Column="1" Grid.Row="2" Foreground="White"
-                                   Text="Product Name( 품 명 )" FontSize="15" 
+                                   Text="품 명" FontSize="{Binding DataListViewFontSize}"
                                    VerticalAlignment="Center" />
 
         <TextBlock Grid.Column="1" Grid.Row="3" Foreground="White"
-                                   Text="Model Name( 모델 명 )" FontSize="15" 
+                                   Text="모델 명" FontSize="{Binding DataListViewFontSize}"
                                    VerticalAlignment="Center" />
 
         <TextBlock Grid.Column="1" Grid.Row="4" Foreground="White"
-                                   Text="Lot Count ( LOT 수량 )" FontSize="15" 
+                                   Text="LOT 수량" FontSize="{Binding DataListViewFontSize}"
                                    VerticalAlignment="Center" />
 
 
         <TextBlock Grid.Column="1" Grid.Row="10" Text="저장 / 취소"  Foreground="White"
-                           HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"/>
+                           HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="{Binding DataListViewFontSize}"/>
 
 
-        <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding ProductNumber}" 
-                                     FontSize="15" MinWidth="150" Foreground="Black"
+        <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding AddProductNumber}" 
+                                     FontSize="{Binding DataListViewFontSize}" MinWidth="150" Foreground="Black"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 
         <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding ProductName}" 
-                                     FontSize="15" MinWidth="150" Foreground="Black"
+                                     FontSize="{Binding DataListViewFontSize}" MinWidth="150" Foreground="Black"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 
         <TextBox Grid.Column="2" Grid.Row="3" Text="{Binding ModelName}" 
-                                     FontSize="15" MinWidth="150" Foreground="Black"
+                                     FontSize="{Binding DataListViewFontSize}" MinWidth="150" Foreground="Black"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 
         <TextBox Grid.Column="2" Grid.Row="4" Text="{Binding LotCount}" 
-                                     FontSize="15" MinWidth="150" Foreground="Black"
+                                     FontSize="{Binding DataListViewFontSize}" MinWidth="150" Foreground="Black"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
         
         <Grid Grid.Column="2" Grid.Row="10" >

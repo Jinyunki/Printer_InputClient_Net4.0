@@ -34,7 +34,7 @@
         </Button>
 
         <!--Excel Recipe-->
-        <Button Grid.Row="1" Margin="12"
+        <Button Grid.Row="1" Margin="12" Visibility="Hidden"
                 Style="{StaticResource Recipe_btn}"
                 Command="{Binding btExcel}" >
             <Button.Background>
@@ -43,7 +43,7 @@
         </Button>
 
         <!--Temporary Print-->
-        <Button Grid.Row="2" Margin="12"
+        <Button Grid.Row="2" Margin="12" Visibility="Hidden"
                 Style="{StaticResource Temporary_btn}"
                 Command="{Binding btTemporary}" >
             <Button.Background>
@@ -52,7 +52,7 @@
         </Button>
 
         <!--Statistics Print-->
-        <Button Grid.Row="3" Margin="12"
+        <Button Grid.Row="3" Margin="12" Visibility="Hidden"
                 Style="{StaticResource Statistics_btn}"
                 Command="{Binding btStatistics}" >
             <Button.Background>

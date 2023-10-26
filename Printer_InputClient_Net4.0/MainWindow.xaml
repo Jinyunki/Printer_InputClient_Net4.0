@@ -9,7 +9,7 @@
         WindowStyle="None" MouseDown="Window_MouseDown"
         xmlns:vm="clr-namespace:Printer_InputClient_Net4._0.ViewModel"
         DataContext="{Binding Main, Source={StaticResource Locator}}"
-        Height="900" Width="1600" AllowsTransparency="True">
+        Height="720" Width="1280" AllowsTransparency="True">
     <Window.Background>
         <SolidColorBrush Color="Transparent"/>
     </Window.Background>
@@ -22,7 +22,7 @@
             <DataTemplate DataType="{x:Type vm:PositionDataViewModel}">
                 <view:PositionDataView/>
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type vm:MainViewModel}">
                 <view:SideTab/>
             </DataTemplate>
@@ -31,11 +31,11 @@
     </Window.Resources>
     
     <!--basic window-->
-    <Border Background="#2E333A" CornerRadius="10">
+    <Border Background="#2E333A" CornerRadius="20">
 
         <Grid >
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="10"/>
             </Grid.RowDefinitions>
@@ -43,19 +43,20 @@
             <!--Header - Top WindowBtn-->
             <Grid x:Name="TopTab" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
                     <ColumnDefinition />
                     <ColumnDefinition Width="25"/>
                     <ColumnDefinition Width="25"/>
                     <ColumnDefinition Width="25"/>
                     <ColumnDefinition Width="5"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnMinimize" Grid.Column="1" Content="-" FontSize="16" Background="#FF112C58"
+                <Button x:Name="btnMinimize" Grid.Column="2" Content="-" FontSize="16" Background="#FF112C58"
                             Style="{StaticResource CommonButtonStyle}" Command="{Binding BtnMinmize}"/>
 
-                <Button x:Name="btnMaximize" Grid.Column="2" Content="O" FontSize="12" Background="DarkBlue"
+                <Button x:Name="btnMaximize" Grid.Column="3" Content="O" FontSize="12" Background="DarkBlue"
                             Style="{StaticResource CommonButtonStyle}" Command="{Binding BtnMaxsize}"/>
 
-                <Button x:Name="btnClose" Grid.Column="3" Content="X" FontSize="12" Background="#FFC92AD2"
+                <Button x:Name="btnClose" Grid.Column="4" Content="X" FontSize="12" Background="#FFC92AD2"
                             Style="{StaticResource CommonButtonStyle}" Command="{Binding BtnClose}"/>
             </Grid>
             <!--Body-->

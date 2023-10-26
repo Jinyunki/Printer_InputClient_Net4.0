@@ -1,13 +1,11 @@
-﻿using Printer_InputClient_Net4._0.Model;
+﻿using GalaSoft.MvvmLight.Command;
+using Printer_InputClient_Net4._0.Model;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.IO.Ports;
 using System.Reflection;
 using System.Text;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Printer_InputClient_Net4._0.ViewModel
 {
@@ -15,11 +13,10 @@ namespace Printer_InputClient_Net4._0.ViewModel
     {
         public PositionDataViewModel()
         {
-            OpenSerialPort(3, SerialPort_DataReceived);
+            OpenSerialPort(SelectedPort, SerialPort_DataReceived);
             ButtonEvent();
             PrinterName = "TEC B-SX8T (305 dpi)";
         }
-
         
 
         public void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -52,9 +49,14 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
                 BtnInkPlusCommand = new Command(PlusInkValue);
                 BtnInkMinusCommand = new Command(MinusInkValue);
+                BtnInkReturnCommand = new Command(InkReturnCommand);
 
                 BtnAddSaveCommand = new Command(AddDataSaveCommand);
                 BtnCancelCommand = new Command(AddDataCancelCommand);
+                
+                BtnPortConnectCommand = new Command(RetryOpenSerial);
+                EnterCommand = new RelayCommand(GetEnterCommand);
+                
             } catch (Exception ex)
             {
                 Trace.WriteLine("========== Exception ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\nException : " + ex);
@@ -63,13 +65,31 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
         }
 
+        private void GetEnterCommand()
+        {
+            AddProductNumber = ProductNumber;
+            GetModelData(AddProductNumber);
+            //Console.WriteLine(ProductNumber);
+        }
+
+        private void RetryOpenSerial(object obj)
+        {
+            OpenSerialPort(SelectedPort, SerialPort_DataReceived);
+        }
+
+        private void InkReturnCommand(object obj)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(tpclCommand._SetPrintDensity(InkLevel, true) + "{C|}"); // 인쇄 농도
+            GetPrint(PrinterName, builder.ToString());
+        }
+
         private void AddDataCancelCommand(object obj)
         {
 
             Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
             try
             {
-
                 ProductNumber = "";
                 ModelName = "";
                 ProductName = "";
@@ -92,9 +112,13 @@ namespace Printer_InputClient_Net4._0.ViewModel
             Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
             try
             {
-                if (ProductNumber != "")
+                if (ProductNumber != "" && ModelName !="" && ProductName != "" && LotCount != "")
                 {
                     UpdateExcelData(FileName, ProductNumber, "", "");
+                } else
+                {
+                    MessageBox.Show("모두 작성 부탁 드립니다.");
+                    return;
                 }
 
                 ProductNumber = "";
@@ -159,7 +183,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
             {
                 int groupNumber = 1;
                 StringBuilder builder = new StringBuilder();
-                builder.Append(SetSizeAndPrintDensity("라벨", "인쇄 영역" )+ "\n"); // 라벨사이즈, 인쇄영역, 잉크 농도
+                builder.Append(SetSizeAndPrintDensity("라벨", "인쇄 영역" )+ "\n"); // 라벨사이즈, 인쇄영역
                 builder.Append(tpclCommand._SetPrintDensity(InkLevel, true)); // 인쇄 농도
                 if (printCount == "0")
                 {
@@ -208,6 +232,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
                 }
 
                 //builder.Append(tpclCommand._SetStartPrinting(double.Parse(PrintCount), 1, 1, 0, 1, 2, 0, 1));
+                builder.Append(tpclCommand._SetPrintDensity("+02", true) + "{C|}"); // 인쇄 농도 롤백
 
                 InputPrinterCommand = builder.ToString();
                 Console.WriteLine(InputPrinterCommand);
@@ -219,11 +244,10 @@ namespace Printer_InputClient_Net4._0.ViewModel
             }
 
         }
-
-       
         // 실제 프린터 출력 메서드
         private void InputDataSend(object obj)
         {
+            
             Trace.WriteLine("==========   Start   ==========\nMethodName : " + (MethodBase.GetCurrentMethod().Name) + "\n");
             try
             {
@@ -231,7 +255,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
                 {
                     ProductNumber = "99240-K3100";
                     GetModelData(ProductNumber);
-                }
+                } 
                 if (Today != FormatDate)
                 {
                     ExcelDataCount = "0";
@@ -239,22 +263,24 @@ namespace Printer_InputClient_Net4._0.ViewModel
 
                 if (RemainderLotCount == "0")
                 {
+                    GetModelData(ProductNumber);
                     UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());
                     CommandTPCL(Delivery, ModelName, LotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
                     GetModelData(ProductNumber);
 
-                    GetPrint(PrinterName);
-                    //Console.WriteLine(InputPrinterCommand);
+                    GetPrint(PrinterName, InputPrinterCommand);
+                    Console.WriteLine(InputPrinterCommand);
                 } else
                 {
-                    SerialNumber = double.Parse(RemainderLotCount).ToString("00");
+                    GetModelData(ProductNumber);
                     PrintCount = "1";
+                    SerialNumber = double.Parse(RemainderLotCount).ToString("00");
                     UpdateExcelData(FileName, ProductNumber, int.Parse(ExcelDataCount).ToString(), int.Parse(PrintCount).ToString());
                     CommandTPCL(Delivery, ModelName, RemainderLotCount, ProductNumber, ProductName, Company, Ground, Factory, SerialNumber, ExcelDataCount);
                     GetModelData(ProductNumber);
 
-                    GetPrint(PrinterName);
-                    //Console.WriteLine(InputPrinterCommand);
+                    GetPrint(PrinterName,InputPrinterCommand);
+                    Console.WriteLine(InputPrinterCommand);
                 }
             } catch (Exception ex)
             {
@@ -274,7 +300,7 @@ namespace Printer_InputClient_Net4._0.ViewModel
                 {
                     ProductNumber = "99240-K3100";
                     GetModelData(ProductNumber);
-                }
+                } 
                 if (Today != FormatDate)
                 {
                     ExcelDataCount = "0";
@@ -309,13 +335,12 @@ namespace Printer_InputClient_Net4._0.ViewModel
         }
 
 
-        private void GetPrint(string printerName)
+        private void GetPrint(string printerName, string sendCommand)
         {
             Trace.WriteLine("Start::::::::::::" + (MethodBase.GetCurrentMethod().Name));
             try
             {
-                RawPrinterHelper.SendStringToPrinter(printerName, InputPrinterCommand);
-                //MessageBox.Show("연결 성공");
+                RawPrinterHelper.SendStringToPrinter(printerName, sendCommand);
             } catch (Exception e)
             {
                 Trace.WriteLine("Catch::::::::::" + (MethodBase.GetCurrentMethod().Name) + e);

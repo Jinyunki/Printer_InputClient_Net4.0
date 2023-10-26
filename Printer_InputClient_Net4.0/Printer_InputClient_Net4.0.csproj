@@ -107,14 +107,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Command.cs" />
+    <Compile Include="Utiles\Command.cs" />
     <Compile Include="Model\LabelModel.cs" />
     <Compile Include="Model\MainModel.cs" />
     <Compile Include="Model\PositionDataModel.cs" />
     <Compile Include="Model\ProductDataModel.cs" />
-    <Compile Include="SignalEventArgs .cs" />
-    <Compile Include="RawPrinterHelper.cs" />
-    <Compile Include="ViewCapture.cs" />
+    <Compile Include="Utiles\SignalEventArgs .cs" />
+    <Compile Include="Utiles\RawPrinterHelper.cs" />
+    <Compile Include="Utiles\ViewCapture.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PositionDataViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -236,6 +236,10 @@
   <ItemGroup>
     <Resource Include="Assets\img_cancel_default.png" />
     <Resource Include="Assets\img_cancel_event.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\img_returnInk_default.png" />
+    <Resource Include="Assets\img_returnInk_event.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Printer_InputClient_Net4._0.View"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" Background="Transparent"
              DataContext="{Binding PositionDataViewModel, Source={StaticResource Locator}}"
              d:DesignHeight="800" d:DesignWidth="1400">
     <UserControl.Resources>
@@ -14,7 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid >
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition/>
@@ -38,22 +38,22 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="부품식별표(생산지시서)" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="부품식별표(생산지시서)" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
             <Grid Grid.Column="1" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="지 역" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="지 역" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
             <Grid Grid.Column="2" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="{Binding Ground}" FontSize="25" HorizontalAlignment="Left"
+                <TextBlock Text="{Binding Ground}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
 
-            <Grid Grid.Column="3" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="현대/기아 자동차(주)용" FontSize="25" HorizontalAlignment="Center"
+            <Grid Grid.Column="3" Background="White" Margin="0 1 0 1">
+                <TextBlock Text="현대/기아 자동차(주)용" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
         </Grid>
@@ -70,32 +70,32 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="공 장" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="공 장" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
             <Grid Grid.Column="1" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="{Binding Factory}" FontSize="25" HorizontalAlignment="Left"
+                <TextBlock Text="{Binding Factory}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
 
             <Grid Grid.Column="2" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="차 종" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="차 종" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
             <Grid Grid.Column="3" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="{Binding ModelName}" FontSize="25" HorizontalAlignment="Left"
+                <TextBlock Text="{Binding ModelName}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
 
             <Grid Grid.Column="4" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="납품장소" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="납품장소" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
-            <Grid Grid.Column="5" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="{Binding Delivery}" FontSize="25" HorizontalAlignment="Left"
+            <Grid Grid.Column="5" Background="White" Margin="0 1 0 1">
+                <TextBlock Text="{Binding Delivery}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
         </Grid>
@@ -110,22 +110,22 @@
 
 
             <Grid Grid.Column="0" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="품 번" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="품 번" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
-            
+
             <Grid Grid.Column="1" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="{Binding ProductNumber}" FontSize="25" HorizontalAlignment="Left"
+                <TextBlock Text="{Binding ProductNumber}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
 
             <Grid Grid.Column="2" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="수 량" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="수 량" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
-            <Grid Grid.Column="3" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="{Binding LotCount}" FontSize="25" HorizontalAlignment="Left"
+            <Grid Grid.Column="3" Background="White" Margin="0 1 0 1">
+                <TextBlock Text="{Binding LotCount}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
         </Grid>
@@ -137,18 +137,18 @@
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="품 명" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="품 명" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
 
-            <Grid Grid.Column="1" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="{Binding ProductName}" FontSize="25" HorizontalAlignment="Left"
+            <Grid Grid.Column="1" Background="White" Margin="0 1 0 1">
+                <TextBlock Text="{Binding ProductName}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="4" Background="White" Margin="0 0 2 0">
+        <Grid Grid.Row="4" Background="White" Margin="0 0 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="8*"/>
@@ -156,20 +156,21 @@
 
             <Grid Grid.ColumnSpan="2" Background="HotPink" Opacity="0.5" Margin="40 10"/>
             <Grid Grid.Column="1">
-                <TextBlock Text="{Binding ProductName}" FontSize="25" HorizontalAlignment="Left"
+                <TextBlock Text="{Binding ProductName}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="5" Background="White" Margin="0 0 2 0">
+        <Grid Grid.Row="5" Background="White" Margin="0 0 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="8*"/>
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="1">
-                <TextBlock Text="{Binding Barcode}" FontSize="25" HorizontalAlignment="Left"
+                <TextBlock Text="{Binding Barcode}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
+                <Image Source="{Binding barcodeImg}"/>
             </Grid>
         </Grid>
 
@@ -184,7 +185,7 @@
 
 
             <Grid Grid.Column="0" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="납품일자" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="납품일자" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
@@ -192,12 +193,12 @@
             </Grid>
 
             <Grid Grid.Column="2" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="업체명" FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="업체명" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
-            <Grid Grid.Column="3" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="{Binding Company}" FontSize="25" HorizontalAlignment="Left"
+            <Grid Grid.Column="3" Background="White" Margin="0 1 0 1">
+                <TextBlock Text="{Binding Company}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
         </Grid>
@@ -218,11 +219,11 @@
             </Grid>
 
             <Grid Grid.Column="2" Background="White" Margin="0 1 2 1">
-                <TextBlock Text="Lot No." FontSize="25" HorizontalAlignment="Center"
+                <TextBlock Text="Lot No." FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
-            <Grid Grid.Column="3" Background="White" Margin="0 1 2 0">
+            <Grid Grid.Column="3" Background="White" Margin="0 1 0 0">
             </Grid>
         </Grid>
 
@@ -246,12 +247,12 @@
                            VerticalAlignment="Center"/>
             </Grid>
 
-            <Grid Grid.Column="3" Background="White" Margin="0 1 2 1">
+            <Grid Grid.Column="3" Background="White" Margin="0 1 0 1">
             </Grid>
         </Grid>
 
 
-        <Grid Grid.Row="9" Background="White" Margin="0 0 2 0">
+        <Grid Grid.Row="9" Background="White" Margin="0 0 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="5*"/>
@@ -260,23 +261,23 @@
 
 
             <Grid Grid.Column="0" Background="White" >
-                <TextBlock Text="발행번호 : " FontSize="20" HorizontalAlignment="Center"
+                <TextBlock Text="발행번호 : " FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
             </Grid>
 
             <Grid Grid.Column="1" Background="White">
-                <TextBlock Text="{Binding SerialNumber}" FontSize="25" HorizontalAlignment="Left"
+                <TextBlock Text="{Binding SerialNumber}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
-            
+
             <Grid Grid.Column="2" Background="White">
-                <TextBlock Text="용기No : " FontSize="25" HorizontalAlignment="Left"
+                <TextBlock Text="용기No : " FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
 
         </Grid>
 
-        <Grid Grid.Row="10" Background="White" Margin="0 0 2 0">
+        <Grid Grid.Row="10" Background="White" Margin="0 0 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="7*"/>
@@ -285,13 +286,14 @@
 
             <Grid Grid.Column="0" Background="White">
             </Grid>
-            
+
             <Grid Grid.Column="2" Background="White">
-                <TextBlock Text="{Binding ProductName}" FontSize="35" HorizontalAlignment="Left"
+                <TextBlock Text="{Binding ProductName}" FontSize="{Binding PreViewFontSize}" HorizontalAlignment="Left"
                            VerticalAlignment="Center"/>
             </Grid>
 
         </Grid>
 
     </Grid>
+
 </UserControl>

@@ -28,18 +28,18 @@
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="7*"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="7.5*"/>
+                <ColumnDefinition Width="2.5*"/>
             </Grid.ColumnDefinitions>
 
             <Grid  Grid.Column="0" Opacity="{Binding OpacityValue}">
-                 <view:MPreView Visibility="Visible"/>
+                <view:MPreView Visibility="Visible" Margin="5"/>
                 <!--<ContentControl Content="{Binding CurrentViewModel, UpdateSourceTrigger=PropertyChanged}"/>-->
             </Grid>
 
             <Grid Grid.Column="0" Opacity="0.8" Visibility="{Binding NoneRecipe, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="레시피를 등록 하세요" HorizontalAlignment="Center" VerticalAlignment="Top"
-                           FontSize="100" Foreground="Red"/>
+                           FontSize="80" Foreground="Red"/>
                 
                 <TextBlock Text="No Recipe" HorizontalAlignment="Center" VerticalAlignment="Center"
                            FontSize="150" Foreground="Red"/>
@@ -56,21 +56,10 @@
                 </Rectangle>
             </Grid>
 
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Margin="5">
                 <view:DataListView Visibility="{Binding ExistRecipe, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 <view:AddRecipeView Visibility="{Binding NoneRecipe, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </Grid>
-
-            <!--<TextBox Grid.Column="0" Text="{Binding InputPrinterCommand}" Foreground="Black"
-                       TextWrapping="Wrap" FontSize="20" Visibility="Hidden"/>-->
-            
-
-            <TextBox Text="{Binding PrinterName}" Grid.Column="1" VerticalAlignment="Bottom"
-                     TextWrapping="Wrap" />
-            <Button Content="TestPrint" Grid.Column="1" VerticalAlignment="Bottom"
-                    HorizontalAlignment="Right" Command="{Binding TestPrint}"/>
-
-            
         </Grid>
     </Grid>
 </UserControl>
