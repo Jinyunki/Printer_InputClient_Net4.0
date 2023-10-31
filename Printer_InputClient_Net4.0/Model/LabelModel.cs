@@ -467,63 +467,23 @@ namespace Printer_InputClient_Net4._0.Model
 
         }
         /// <summary>
-        /// 36진법 반환 메서드
+        /// 36진법 Converter
         /// </summary>
-        /// <param name="printCount"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public string GenerateOutput(int printCount)
+        public string ConvertToBase36(int value)
         {
-            string returnValue = "범위 초과";
-            double temp = printCount / 36.01;
-            int a = (int)temp; // temp의 정수 값 (0~35.999)
-            double fractionalPart = temp - a; // 정수값을 뺸 소수점 값
-            int b = (int)fractionalPart * 10; // 소수점 0번째 값
-            string convertA = "";
-            // ( a = 0 )
-            if (a < 1)
-            {
-                returnValue = ConvertOutput(printCount); // 반환 할 값
-                return "00" + a + returnValue;
-            }
+            const string base36Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string result = string.Empty;
 
-            // ( 1 =< a < 36 )
-            else if (a >= 1 && a < 36) 
+            while (value > 0)
             {
-                if (a > 9) // a, 즉 두번째 자리의 정수치가 10이 넘을때
-                {
-                    convertA = ConvertOutput(a + 1);
-                    for (int i = 1; i <= 36; i++) // 이곳에서의 36은 한사이클 36의 제곱을 의미.
-                    {
-                        if (i < temp && temp <= i + 1)
-                        {
-                            returnValue = ConvertOutput(printCount); // 반환 할 값
-                            return "00" + convertA + returnValue;
-                        }
-                    }
-                } 
-                else
-                {
-                    for (int i = 1; i <= 36; i++) // 이곳에서의 36은 한사이클 36의 제곱을 의미.
-                    {
-                        if (i < temp && temp <= i + 1)
-                        {
-                            returnValue = ConvertOutput(printCount); // 반환 할 값
-                            return "00" + a + returnValue;
-                        }
-                    }
-                }
-                
+                int remainder = value % 36;
+                result = base36Chars[remainder] + result;
+                value /= 36;
             }
-
-            // a > 36
-            else
-            {
-                returnValue = "출력 범위 초과";
-                return returnValue;
-            }
-
-            return returnValue;
-  
+            
+            return "00" + result.PadLeft(2, '0');
         }
         #endregion
     }

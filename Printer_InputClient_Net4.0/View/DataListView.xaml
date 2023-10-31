@@ -190,12 +190,18 @@
             
         </Grid>
 
-        <TextBox Grid.Column="2" Grid.Row="8" Text="{Binding PrintCount}" Background="Transparent"
-                                     FontSize="{Binding DataListViewFontSize}" MinWidth="150" Foreground="White"
-                                     VerticalAlignment="Center" HorizontalAlignment="Left" />
+        <TextBox x:Name="PrintCountView" Grid.Column="2" Grid.Row="8" Background="Transparent"
+                 Text="{Binding PrintCount, UpdateSourceTrigger=PropertyChanged}"
+                 FontSize="{Binding DataListViewFontSize}" MinWidth="150" Foreground="White"
+                 VerticalAlignment="Center" HorizontalAlignment="Left"
+                 GotFocus="TextBox_GotFocus">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding BtnPrintCommand}" />
+            </TextBox.InputBindings>
+        </TextBox>
 
 
-        <TextBox Grid.Column="2" Grid.Row="9" Text="{Binding RemainderLotCount}" Background="Transparent"
+        <TextBox Grid.Column="2" Grid.Row="9" Text="{Binding RemainderLotCount, UpdateSourceTrigger=PropertyChanged}" Background="Transparent"
                                      FontSize="{Binding DataListViewFontSize}" MinWidth="150" Foreground="White"
                                      VerticalAlignment="Center" HorizontalAlignment="Left" />
 

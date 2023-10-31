@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using GalaSoft.MvvmLight.Messaging;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Printer_InputClient_Net4._0.View
 {
@@ -22,6 +12,23 @@ namespace Printer_InputClient_Net4._0.View
         public DataListView()
         {
             InitializeComponent();
+            Messenger.Default.Register<FocusMessage>(this, (message) =>
+            {
+                // 포커스를 변경할 로직을 여기에 작성합니다.
+                PrintCountView.Focus();
+            });
         }
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                textBox.SelectAll();
+            }
+        }
+    }
+
+    public class FocusMessage
+    {
+        
     }
 }

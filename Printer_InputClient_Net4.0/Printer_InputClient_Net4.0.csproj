@@ -54,6 +54,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>printer_78936.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BinaryKits.Utility.ZPLUtility, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ZPLUtility.1.6.3\lib\BinaryKits.Utility.ZPLUtility.dll</HintPath>
@@ -240,6 +243,9 @@
   <ItemGroup>
     <Resource Include="Assets\img_returnInk_default.png" />
     <Resource Include="Assets\img_returnInk_event.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="printer_78936.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
